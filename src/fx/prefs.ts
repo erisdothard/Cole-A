@@ -10,14 +10,32 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+/* Storage throws outright in private browsing and in embedded frames with
+   site data blocked. It is a convenience here, never load-bearing, so a
+   failure has to degrade to the default rather than take the boot with it. */
+function read(): FxLevel | null {
+  try {
+    const stored = localStorage.getItem(KEY) as FxLevel | null
+    return stored && ORDER.includes(stored) ? stored : null
+  } catch {
+    return null
+  }
+}
+
+function write(level: FxLevel) {
+  try {
+    localStorage.setItem(KEY, level)
+  } catch {
+    /* preference lasts this session only */
+  }
+}
+
 export function getFx(): FxLevel {
-  const stored = localStorage.getItem(KEY) as FxLevel | null
-  if (stored && ORDER.includes(stored)) return stored
-  return prefersReducedMotion() ? 'lite' : 'full'
+  return read() ?? (prefersReducedMotion() ? 'lite' : 'full')
 }
 
 export function setFx(level: FxLevel) {
-  localStorage.setItem(KEY, level)
+  write(level)
   document.documentElement.dataset.fx = level
 }
 
