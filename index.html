@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-fx="full">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>CVZ // SYSTEM</title>
+<meta name="description" content="CVZ — an interactive system containing merch, video, artwork, music and transmissions." />
+<meta name="theme-color" content="#05070a" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%2305070a'/><text x='8' y='12' font-family='monospace' font-size='11' fill='%235ff5ff' text-anchor='middle'>C</text></svg>" />
+</head>
+<body>
+  <!-- ============ STAGE 1: POWER UP ============ -->
+  <div id="boot" class="boot" aria-label="Power up screen">
+    <canvas id="crt" class="crt-canvas" aria-hidden="true"></canvas>
+
+    <div id="powerScreen" class="power-screen">
+      <div class="power-brand">
+        <span class="power-brand__mark">CVZ</span>
+        <span class="power-brand__sub">SYSTEMS</span>
+      </div>
+      <button id="powerBtn" class="power-btn" type="button">
+        <span class="power-btn__ring" aria-hidden="true"></span>
+        <span class="power-btn__glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none"
+               stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M12 3v9" /><path d="M6.3 6.3a8 8 0 1 0 11.4 0" />
+          </svg>
+        </span>
+        <span class="power-btn__label">POWER UP</span>
+      </button>
+      <p class="power-hint">PRESS TO INITIALIZE</p>
+    </div>
+
+    <button id="skipBoot" class="skip-boot" type="button" hidden>SKIP &rsaquo;&rsaquo;</button>
+  </div>
+
+  <!-- ============ STAGE 2: THE SYSTEM ============ -->
+  <main id="system" class="system" hidden>
+    <canvas id="stream" class="stream-canvas" aria-hidden="true"></canvas>
+    <div id="ambient" class="ambient" aria-hidden="true"></div>
+    <div id="desktop" class="desktop"></div>
+    <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+
+    <nav id="taskbar" class="taskbar" aria-label="System navigation"></nav>
+  </main>
+
+  <!-- Always-on CRT treatment. Pointer-transparent so the system stays usable. -->
+  <div class="fx" aria-hidden="true">
+    <div class="fx__scan"></div>
+    <div class="fx__grille"></div>
+    <div class="fx__glow"></div>
+    <canvas id="noise" class="fx__noise"></canvas>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

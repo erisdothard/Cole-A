@@ -1,0 +1,80 @@
+/* ---------------------------------------------------------------
+   CRT treatment over the live system.
+   Everything here is pointer-transparent — the machine stays usable.
+   Levels are set on <html data-fx>: full | lite | off
+   --------------------------------------------------------------- */
+.fx {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+.fx > * { position: absolute; inset: 0; }
+
+/* horizontal scanlines + a slow rolling bright band */
+.fx__scan {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, .34) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: multiply;
+}
+.fx__scan::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 22vh;
+  background: linear-gradient(
+    180deg, transparent, rgba(180, 255, 255, .045) 45%, transparent);
+  animation: roll 7.5s linear infinite;
+}
+@keyframes roll {
+  from { transform: translateY(-30vh); }
+  to   { transform: translateY(115vh); }
+}
+
+/* vertical aperture grille — the RGB stripe of a real tube */
+.fx__grille {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 0, 90, .045) 0 1px,
+    rgba(70, 255, 140, .045) 1px 2px,
+    rgba(95, 245, 255, .045) 2px 3px
+  );
+  mix-blend-mode: screen;
+}
+
+/* tube curvature: vignette + corner falloff + phosphor bloom */
+.fx__glow {
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 52%, rgba(0, 0, 0, .55) 100%),
+    radial-gradient(90% 70% at 50% 44%, rgba(95, 245, 255, .05), transparent 70%);
+  animation: flicker 5.5s steps(1) infinite;
+}
+@keyframes flicker {
+  0%, 96%, 100% { opacity: 1; }
+  96.5% { opacity: .82; }
+  97%   { opacity: 1; }
+  97.6% { opacity: .9; }
+}
+
+.fx__noise {
+  width: 100%;
+  height: 100%;
+  opacity: .05;
+  mix-blend-mode: overlay;
+}
+
+/* --- reduced effects --- */
+:root[data-fx="lite"] .fx__grille,
+:root[data-fx="lite"] .fx__noise { display: none; }
+:root[data-fx="lite"] .fx__scan::after,
+:root[data-fx="lite"] .fx__glow { animation: none; }
+:root[data-fx="lite"] .fx__scan { opacity: .5; }
+
+:root[data-fx="off"] .fx { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx__scan::after, .fx__glow { animation: none; }
+}
