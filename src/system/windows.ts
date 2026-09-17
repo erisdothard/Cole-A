@@ -13,7 +13,13 @@ type Win = {
   section: Section
 }
 
-const CASCADE = 28
+const CASCADE = 26
+
+/** Relative slots, as a fraction of the free space on each axis. */
+const ANCHORS: [number, number][] = [
+  [0.10, 0.14], [0.62, 0.10], [0.36, 0.52],
+  [0.86, 0.46], [0.06, 0.70], [0.68, 0.76],
+]
 
 export class WindowManager {
   private wins = new Map<string, Win>()
@@ -119,14 +125,21 @@ export class WindowManager {
     return best
   }
 
-  /** Cascade new windows so nothing lands exactly on top of anything else. */
+  /** Scatter windows across the whole desktop rather than piling them in
+      one corner — the system should look inhabited, not stacked. */
   private placement(section: Section) {
     const bounds = this.root.getBoundingClientRect()
     const w = Math.min(section.size.w, Math.max(260, bounds.width - 40))
     const h = Math.min(section.size.h, Math.max(160, bounds.height - 40))
-    const step = this.opened++ % 6
-    const x = clamp(bounds.width * 0.08 + step * CASCADE, 12, Math.max(12, bounds.width - w - 12))
-    const y = clamp(bounds.height * 0.1 + step * CASCADE, 12, Math.max(12, bounds.height - h - 12))
+
+    const anchor = ANCHORS[this.opened % ANCHORS.length]!
+    const drift = Math.floor(this.opened / ANCHORS.length) * CASCADE
+    this.opened += 1
+
+    const maxX = Math.max(12, bounds.width - w - 12)
+    const maxY = Math.max(12, bounds.height - h - 12)
+    const x = clamp((bounds.width - w) * anchor[0] + drift, 12, maxX)
+    const y = clamp((bounds.height - h) * anchor[1] + drift, 12, maxY)
     return { w, h, x, y }
   }
 

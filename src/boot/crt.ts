@@ -96,6 +96,10 @@ void main() {
   // --- whiteout at the end of the dive ---
   col = mix(col, vec3(1.0), smoothstep(0.78, 1.0, uDive));
 
+  // Scanlines, grille and vignette each take a bite out of the signal.
+  // Put some of it back so the tube reads lit, not dim.
+  col *= 1.28;
+
   // --- vignette ---
   vec2 v = vUv * (1.0 - vUv.yx);
   col *= pow(v.x * v.y * 16.0, 0.22);

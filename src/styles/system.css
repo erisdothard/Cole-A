@@ -18,7 +18,7 @@
   width: 100%;
   height: 100%;
   display: block;
-  opacity: .5;
+  opacity: .28;
 }
 
 /* ---------- drifting objects ---------- */
@@ -51,20 +51,20 @@
   flex-direction: column;
   min-width: 260px;
   min-height: 150px;
-  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  background: linear-gradient(180deg, #060c11 0%, #081219 100%);
   border: 1px solid var(--cyan-dim);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, .8),
-    0 18px 60px rgba(0, 0, 0, .75),
-    0 0 42px rgba(95, 245, 255, .1);
+    0 0 0 1px rgba(0, 0, 0, .9),
+    0 24px 70px rgba(0, 0, 0, .92),
+    0 0 42px rgba(95, 245, 255, .12);
   animation: win-in .26s var(--ease-crt);
 }
 .win[data-focus="1"] {
   border-color: var(--cyan);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, .8),
-    0 18px 60px rgba(0, 0, 0, .8),
-    0 0 60px rgba(95, 245, 255, .22);
+    0 0 0 1px rgba(0, 0, 0, .9),
+    0 24px 70px rgba(0, 0, 0, .95),
+    0 0 60px rgba(95, 245, 255, .28);
 }
 .win[data-closing="1"] { animation: win-out .18s ease forwards; }
 

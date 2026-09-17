@@ -112,8 +112,8 @@ export class PostTerminal {
 
 /** Colour a line by what it says — warnings amber, the handoff cyan. */
 function tint(line: string): string {
-  if (line.startsWith('WARNING') || line.includes('UNSTABLE')) return '#ffb000'
+  if (line.startsWith('WARNING') || line.includes('UNSTABLE')) return '#ffc23d'
   if (line.startsWith('>>>')) return '#5ff5ff'
-  if (line.includes(' OK')) return '#46ff8c'
-  return '#9fd3c7'
+  if (line.includes(' OK')) return '#6bffa6'
+  return '#c4efe4'
 }
