@@ -14,6 +14,7 @@ export type Item = {
   thumb?: string
   video?: string
   poster?: string
+  silent?: boolean // source video has no sound; the set keeps its static under it
   w: number
   h: number
 }

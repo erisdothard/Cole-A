@@ -30,6 +30,10 @@ TITLES = {
     ("merch", 15): ("Dorsia socks", "Socks"), ("merch", 16): ("The 10th Muse", "Tee"), ("merch", 17): ("Crvck Apparel", "Tee"),
     ("merch", 18): ("Dorsia sun", "Tee"), ("merch", 19): ("Dorsia 11", "Jersey"),
 }
+# Videos whose source has no sound (measured with ffmpeg volumedetect: -91 dB throughout).
+# The set keeps its static under these instead of ducking into dead air.
+SILENT = {"05be8c_d2f6df4ea68544c7b74f68f2d3534b12", "05be8c_3aa739c64b534d9bbc86cac8671d1c85", "05be8c_8cc6c94d91d24e6aa8393b339809c589",
+          "05be8c_50ace602c61d460bac01384e6c107a4c", "05be8c_b6daf8610b574c779d1f6d59554eccc2"}
 items = []
 for e in m:
     sec, order = e.get("section"), e.get("order", 0)
@@ -42,7 +46,9 @@ for e in m:
     it = {"id": f"{'tx' if kind=='tx' else 'p' if kind=='pull' else 'b'}-{order+1:02d}" if sec != "video" else f"tx-{order+1:02d}",
           "kind": kind, "channel": {"pull": 2, "blank": 3, "tx": 4}[kind], "title": title, "note": note,
           "image": f"/media/web/{base}_w.jpg", "thumb": f"/media/web/{base}_t.jpg", "w": w, "h": h}
-    if e.get("video_id"): it["video"] = f"/media/tx/{e['video_id']}.mp4"; it["poster"] = f"/media/tx/{e['video_id']}.jpg"
+    if e.get("video_id"):
+        it["video"] = f"/media/tx/{e['video_id']}.mp4"; it["poster"] = f"/media/tx/{e['video_id']}.jpg"
+        if e["video_id"] in SILENT: it["silent"] = True
     items.append(it)
 # unique ids
 seen = {}

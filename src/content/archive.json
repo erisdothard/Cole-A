@@ -125,7 +125,8 @@
   "w": 1920,
   "h": 1080,
   "video": "/media/tx/05be8c_d2f6df4ea68544c7b74f68f2d3534b12.mp4",
-  "poster": "/media/tx/05be8c_d2f6df4ea68544c7b74f68f2d3534b12.jpg"
+  "poster": "/media/tx/05be8c_d2f6df4ea68544c7b74f68f2d3534b12.jpg",
+  "silent": true
  },
  {
   "id": "b-10",
@@ -281,7 +282,8 @@
   "w": 1080,
   "h": 1920,
   "video": "/media/tx/05be8c_3aa739c64b534d9bbc86cac8671d1c85.mp4",
-  "poster": "/media/tx/05be8c_3aa739c64b534d9bbc86cac8671d1c85.jpg"
+  "poster": "/media/tx/05be8c_3aa739c64b534d9bbc86cac8671d1c85.jpg",
+  "silent": true
  },
  {
   "id": "p-04",
@@ -373,7 +375,8 @@
   "w": 1440,
   "h": 1080,
   "video": "/media/tx/05be8c_8cc6c94d91d24e6aa8393b339809c589.mp4",
-  "poster": "/media/tx/05be8c_8cc6c94d91d24e6aa8393b339809c589.jpg"
+  "poster": "/media/tx/05be8c_8cc6c94d91d24e6aa8393b339809c589.jpg",
+  "silent": true
  },
  {
   "id": "tx-12",
@@ -386,7 +389,8 @@
   "w": 1080,
   "h": 1920,
   "video": "/media/tx/05be8c_50ace602c61d460bac01384e6c107a4c.mp4",
-  "poster": "/media/tx/05be8c_50ace602c61d460bac01384e6c107a4c.jpg"
+  "poster": "/media/tx/05be8c_50ace602c61d460bac01384e6c107a4c.jpg",
+  "silent": true
  },
  {
   "id": "p-13",
@@ -432,7 +436,8 @@
   "w": 720,
   "h": 1280,
   "video": "/media/tx/05be8c_b6daf8610b574c779d1f6d59554eccc2.mp4",
-  "poster": "/media/tx/05be8c_b6daf8610b574c779d1f6d59554eccc2.jpg"
+  "poster": "/media/tx/05be8c_b6daf8610b574c779d1f6d59554eccc2.jpg",
+  "silent": true
  },
  {
   "id": "p-17",

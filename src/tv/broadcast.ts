@@ -118,12 +118,13 @@ export class Broadcast {
     this.burst(220); sfx.static(220)
     const m = $('#lock-media'); m.innerHTML = item.video ? `<video src="${item.video}" poster="${item.poster ?? ''}" playsinline loop></video>` : `<img src="${item.image}" alt="${item.title}">`
     // A video in focus is the one thing on the set you actually hear: the static ducks, its own sound comes up at the TV volume.
-    const v = m.querySelector('video')
-    if (v) { sfx.attach(v); v.play().catch(() => { v.muted = true; v.play().catch(() => {}) }) } else sfx.detach()
-    sfx.duck(!!v)
+    const v = m.querySelector('video'), sound = !!v && !item.silent
+    if (v && !sound) v.muted = true
+    if (v && sound) { sfx.attach(v); v.play().catch(() => { v.muted = true; v.play().catch(() => {}) }) } else { sfx.detach(); v?.play().catch(() => {}) }
+    sfx.duck(sound)
     $('#lk-title').textContent = item.title.toUpperCase(); $('#lk-note').textContent = item.note.toUpperCase()
     const list = this.lockList(), idx = list.indexOf(item)
-    $('#lk-count').textContent = `${String(idx + 1).padStart(2, '0')} / ${list.length} · CH ${this.ch} ${CHANNELS.find((c) => c.n === this.ch)!.name}`
+    $('#lk-count').textContent = `${String(idx + 1).padStart(2, '0')} / ${list.length} · CH ${this.ch} ${CHANNELS.find((c) => c.n === this.ch)!.name}${item.silent ? ' · MOS' : ''}`
     $('#lk-tc').textContent = `SP ${this.tc()}`
     $('#lock').hidden = false; this.tube.classList.add('locked'); $('#osd-hover').hidden = true
     $('#osd-mode').textContent = 'PAUSE ‖'
