@@ -18,8 +18,9 @@ export function armSet(onInside: () => Promise<void> | void): void {
 
   /* ---- which set ---- */
   let cab = readCabinet()
-  const showCab = () => { applyCabinet(set, CABINETS[cab]); $('#switch-name').textContent = CABINETS[cab].name; $('#switch-n').textContent = `${cab + 1} / ${CABINETS.length}` }
-  showCab()
+  const upright = matchMedia('(max-width: 800px)')
+  const showCab = () => { applyCabinet(set, CABINETS[cab], upright.matches); $('#switch-name').textContent = CABINETS[cab].name; $('#switch-n').textContent = `${cab + 1} / ${CABINETS.length}` }
+  showCab(); upright.addEventListener('change', showCab)
   $('#switch-set').addEventListener('click', async () => {
     if (fired) return
     set.classList.add('swap'); sfx.click(); await wait(180)

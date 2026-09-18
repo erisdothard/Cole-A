@@ -75,4 +75,5 @@ button { font: inherit; }
 .switch:hover { color: #fff; border-color: #fff; }
 .switch b { font-weight: 400; color: #e8e2d0; } .switch i { font-style: normal; color: #6f6a5e; }
 
-@media (max-width: 800px) { .set { width: 96vw; } }
+/* Phones: the upright photo, sized to the height so the set fills the screen like the original did. */
+@media (max-width: 800px) { .set { width: min(96vw, calc(74vh * var(--w, 659) / var(--h, 970))); } }
