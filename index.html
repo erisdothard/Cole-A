@@ -36,7 +36,8 @@
 
       <div class="osd osd--tl" id="osd-tl"><span id="osd-mode">PLAY ▶</span> <span id="osd-tc">SP 0:00:00</span></div>
       <div class="osd osd--tr" id="osd-ch"><span id="osd-num">CH 1</span><span id="osd-name">CVZ</span></div>
-      <div class="osd osd--br" id="osd-help">MENU · ▲▼ CH · ESC</div>
+      <div class="osd osd--br" id="osd-help">MENU · ▲▼ CH · +− VOL · ESC</div>
+      <div class="osd osd--vol" id="osd-vol" hidden aria-live="polite"><span>VOL</span><span class="vbar" id="osd-vol-bar" aria-hidden="true"></span><span id="osd-vol-n"></span></div>
       <div class="osd osd--bl" id="osd-hover" hidden>▶ SELECT</div>
 
       <section id="lock" class="lock" hidden>
@@ -54,7 +55,11 @@
     </div>
     <div class="tube__glass" aria-hidden="true"></div>
     <button id="menu-btn" class="menu-btn" type="button">MENU</button>
-    <button id="mute-btn" class="mute-btn" type="button" aria-pressed="false">SOUND ON</button>
+    <div class="volctl" role="group" aria-label="Volume">
+      <button id="vol-dn" class="ctl" type="button" aria-label="Volume down">VOL −</button>
+      <button id="vol-up" class="ctl" type="button" aria-label="Volume up">VOL +</button>
+      <button id="mute-btn" class="ctl" type="button" aria-pressed="false">MUTE</button>
+    </div>
   </main>
 
   <script type="module" src="/src/main.ts"></script>

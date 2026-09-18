@@ -22,6 +22,7 @@ export class Broadcast {
   private last = this.t0
   private feedTimer = 0
   private spamTimer = 0
+  private volTimer = 0
   private speed = getFx() === 'off' ? 0 : getFx() === 'lite' ? 0.35 : 1
   private hover: Obj | null = null
   private snow = new Snow($<HTMLCanvasElement>('#snow'))
@@ -150,6 +151,18 @@ export class Broadcast {
     setTimeout(() => s.classList.add('out'), 2200 + Math.random() * 1800); setTimeout(() => s.remove(), 4600)
   }
 
+  /* ---------------- volume ---------------- */
+  private volume(delta: number) { sfx.volume(delta); sfx.click(); this.showVolume() }
+  /** The green bar every TV drew: shows on change, lingers while muted. */
+  private showVolume() {
+    const o = $('#osd-vol'), m = sfx.isMuted(), l = sfx.level()
+    $('#osd-vol-bar').innerHTML = Array.from({ length: sfx.max }, (_, i) => `<i class="${i < l && !m ? 'on' : ''}"></i>`).join('')
+    $('#osd-vol-n').textContent = m ? 'MUTE' : String(l).padStart(2, '0')
+    o.hidden = false; o.classList.toggle('osd--mute', m)
+    $('#mute-btn').textContent = m ? 'MUTED' : 'MUTE'; $('#mute-btn').setAttribute('aria-pressed', String(m))
+    clearTimeout(this.volTimer); if (!m) this.volTimer = window.setTimeout(() => { o.hidden = true }, 1800)
+  }
+
   private burst(ms: number) { const s = $('#static'); s.classList.add('on'); this.snow.on = true; setTimeout(() => { s.classList.remove('on'); this.snow.on = false }, ms) }
   private tc() { const s = Math.floor((performance.now() - this.t0) / 1000); return `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` }
 
@@ -176,6 +189,7 @@ export class Broadcast {
       if (e.key === 'ArrowDown' || e.key === 'PageDown') this.tune(((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1)
       if (/^[1-7]$/.test(e.key)) this.tune(Number(e.key))
       if (e.key === 'ArrowRight') this.step(1); if (e.key === 'ArrowLeft') this.step(-1)
+      if (e.key === '+' || e.key === '=') this.volume(1); if (e.key === '-' || e.key === '_') this.volume(-1)
       if (e.key === '0') { this.speed = this.speed ? 0 : 1; $('#osd-mode').textContent = this.speed ? 'PLAY ▶' : 'PAUSE ‖'; this.speed ? this.feed.play().catch(() => {}) : this.feed.pause() }
     })
     let wheel = 0
@@ -186,7 +200,8 @@ export class Broadcast {
     $('#lock').addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('.chyron, video')) this.unlock() })
     $('#menu').addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); const h = (e.target as HTMLElement).closest('h3'); if (li) { this.menu(false); this.lock(li.dataset.id!) } else if (h?.dataset.ch) { this.menu(false); this.tune(Number(h.dataset.ch)) } })
     $('#menu-btn').addEventListener('click', () => this.menu($('#menu').hidden))
-    $('#mute-btn').addEventListener('click', () => { const m = sfx.toggleMute(); $('#mute-btn').textContent = m ? 'SOUND OFF' : 'SOUND ON'; $('#mute-btn').setAttribute('aria-pressed', String(m)) })
+    $('#vol-up').addEventListener('click', () => this.volume(1)); $('#vol-dn').addEventListener('click', () => this.volume(-1))
+    $('#mute-btn').addEventListener('click', () => { sfx.toggleMute(); this.showVolume() })
     addEventListener('hashchange', () => { const id = this.itemFromHash(); const c = this.chFromHash(); if (id) this.lock(id); else if (c && c !== this.ch) this.tune(c) })
   }
   private chFromHash() { const m = location.hash.match(/^#ch\/(\d)/); return m ? Number(m[1]) : null }
