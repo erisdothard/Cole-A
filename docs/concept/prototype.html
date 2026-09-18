@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALLCVZ — motion prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Martian+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css">
+<style>
+  :root { --ground:#050506; --legend:#d9d4c7; --dim:#6d6a63; --paper:#e9e4d4; --cvz:#1f4bff; --cvz-hi:#7fa0ff; --ink-a:var(--cvz); --ink-b:var(--cvz-hi);
+    --plate:"Big Shoulders Display",Impact,sans-serif; --slug:"Martian Mono",ui-monospace,monospace; --seg:"DSEG14 Classic",monospace; }
+  * { box-sizing:border-box; } html,body { height:100%; margin:0; background:var(--ground); color:var(--legend); font-family:var(--slug); overflow:hidden; cursor:crosshair; }
+  #stage { position:fixed; inset:0; }
+  .glass::after { content:""; position:absolute; inset:0; pointer-events:none; z-index:50; background:repeating-linear-gradient(0deg,rgba(0,0,0,.26) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%); }
+  .slug { font-size:11px; letter-spacing:.14em; text-transform:uppercase; line-height:1.7; } .slug b { color:var(--ink-a); font-weight:600; } .slug i { font-style:normal; color:var(--dim); }
+  .plate-type { font-family:var(--plate); font-weight:900; text-transform:uppercase; line-height:.82; }
+  .seg { font-family:var(--seg); color:var(--ink-a); text-shadow:0 0 12px color-mix(in srgb,var(--ink-a) 70%,transparent); }
+  .reg { position:absolute; width:34px; height:34px; color:var(--legend); opacity:.85; z-index:45; pointer-events:none; }
+  .reg.tl{left:26px;top:26px} .reg.tr{right:26px;top:26px} .reg.bl{left:26px;bottom:26px} .reg.br{right:26px;bottom:26px}
+  .hud { position:absolute; z-index:40; left:5%; right:5%; display:flex; justify-content:space-between; align-items:flex-start; pointer-events:none; }
+  .hud.t{top:30px} .hud.b{bottom:30px;align-items:flex-end} .hud .ctl{pointer-events:auto}
+  .key { display:inline-block; border:1px solid currentColor; padding:1px 7px; margin-right:6px; border-radius:2px; }
+  .layer { position:absolute; inset:0; transition:opacity .5s; } .layer.off { opacity:0; pointer-events:none; }
+
+  /* boot */
+  #boot { z-index:200; background:var(--ground); }
+  .tube { position:absolute; left:5%; right:5%; top:9%; height:62%; border-radius:28px/22px; background:radial-gradient(ellipse at 50% 40%,#0c0d12 0%,#020203 70%); box-shadow:inset 0 0 0 2px #1b1b1e,inset 0 0 120px #000; overflow:hidden; }
+  .ghost { position:absolute; inset:0; display:grid; place-items:center; font-size:min(40vw,44vh); letter-spacing:.03em; color:var(--ink-a); opacity:.22;
+    -webkit-mask-image:radial-gradient(circle at center,#000 var(--dot,10%),transparent calc(var(--dot,10%) + 6%)); -webkit-mask-size:var(--cell,20px) var(--cell,20px);
+    mask-image:radial-gradient(circle at center,#000 var(--dot,10%),transparent calc(var(--dot,10%) + 6%)); mask-size:var(--cell,20px) var(--cell,20px); }
+  .face { position:absolute; left:5%; right:5%; bottom:7%; height:160px; display:grid; grid-template-columns:1.1fr 1.4fr 1.1fr; align-items:center; }
+  .btn { width:118px; height:118px; border-radius:50%; margin:0 auto; cursor:pointer; background:radial-gradient(circle at 38% 32%,#3a3a3e,#121214 62%,#050506); box-shadow:0 0 0 6px #0a0a0b,0 0 0 7px #2b2b2f,0 10px 30px #000; transition:transform .1s; }
+  .btn:active { transform:scale(.96); }
+  .btn.lit { background:radial-gradient(circle at 42% 36%,#fff,var(--ink-b) 30%,var(--ink-a) 70%); box-shadow:0 0 0 6px #0a0a0b,0 0 0 7px #2b2b2f,0 0 80px 10px color-mix(in srgb,var(--ink-a) 80%,transparent); }
+  .btn-col { text-align:center; } .btn-col .plate-type { font-size:44px; margin-top:16px; letter-spacing:.04em; }
+  .serial { border:1px solid var(--dim); padding:8px 12px; display:inline-block; }
+  .bars { display:flex; gap:3px; margin-top:6px; } .bars span { width:22px; height:12px; display:block; }
+  #dots { z-index:190; pointer-events:none; }
+  #dots .dotfield { position:absolute; inset:-40%; transform:rotate(22deg) scale(var(--s,1)); transform-origin:center; background:radial-gradient(circle,var(--cvz) 0 37%,transparent 39%) 0 0/300px 300px;
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 calc(var(--hole,0px)),#000 calc(var(--hole,0px) + 2px)); mask-image:radial-gradient(circle at 50% 50%,transparent 0 calc(var(--hole,0px)),#000 calc(var(--hole,0px) + 2px)); }
+
+  /* field */
+  #field { position:absolute; inset:0; perspective:1100px; perspective-origin:50% 47%; z-index:1; isolation:isolate; overflow:hidden; transition:filter .5s,opacity .5s; }
+  #field.dim { filter:blur(2px) brightness(.35); }
+  .scrim { position:absolute; inset:0; z-index:30; pointer-events:none; background:linear-gradient(180deg,rgba(5,5,6,.92) 0,rgba(5,5,6,.55) 13%,transparent 24%,transparent 80%,rgba(5,5,6,.6) 90%,rgba(5,5,6,.94) 100%); }
+  .sheet { position:absolute; left:50%; top:50%; transform-style:preserve-3d; will-change:transform; }
+  .sheet .ht { position:absolute; inset:0; background:var(--c); -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-image:var(--m); mask-image:var(--m); }
+  .sheet .ht.b { background:var(--c2); mix-blend-mode:screen; opacity:.9; transform:translate(var(--ox),var(--oy)); }
+  .sheet .full { position:absolute; inset:0; width:100%; height:100%; opacity:var(--lock,0); }
+  .sheet .mk { position:absolute; width:16px; height:16px; color:#fff; opacity:.6; }
+  .sheet .box { position:absolute; inset:-14px; border:1px solid #fff; opacity:var(--lock,0); box-shadow:0 0 40px rgba(127,160,255,.5); }
+  .sheet .box i { position:absolute; left:0; top:calc(100% + 8px); white-space:nowrap; color:#fff; font-style:normal; font-size:11px; letter-spacing:.14em; }
+  #vp { left:calc(50% - 17px); top:calc(47% - 17px); opacity:.5; }
+
+  /* lock view */
+  #lock { z-index:100; pointer-events:none; } #lock.on { pointer-events:auto; }
+  .focus { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.9); max-height:72vh; max-width:44vw; box-shadow:0 0 0 1px var(--ink-a),0 0 120px color-mix(in srgb,var(--ink-a) 35%,transparent); transition:transform .45s cubic-bezier(.2,.9,.2,1); z-index:60; }
+  #lock.on .focus { transform:translate(-50%,-50%) scale(1); }
+  .title-block { position:absolute; left:5%; top:16%; width:22vw; } .title-block .plate-type { font-size:clamp(48px,7vw,120px); color:var(--ink-a); margin-top:14px; }
+  .passes { position:absolute; right:5%; top:16%; width:19vw; } .pass { display:grid; grid-template-columns:46px 1fr; gap:12px; align-items:center; padding:12px 0; border-top:1px solid #2a2a2a; } .pass .sw { height:46px; }
+
+  /* index */
+  #index { z-index:300; background:var(--paper); color:#111; padding:6vh 7vw; overflow:auto; cursor:default; }
+  #index .plate-type { font-size:clamp(60px,10vw,150px); } #index .cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:46px; }
+  #index h3 { font-family:var(--plate); font-size:40px; margin:34px 0 0; text-transform:uppercase; } #index table { width:100%; border-collapse:collapse; margin-top:16px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; }
+  #index td { border-top:1px solid #111; padding:9px 8px 9px 0; } #index td:first-child { width:70px; color:#8a2a1a; } #index a { color:#111; text-decoration:none; } #index a:hover { text-decoration:underline; }
+  input[type=range] { accent-color:var(--legend); width:200px; }
+  @media (max-width:800px) { .face { grid-template-columns:1fr; height:auto; bottom:4%; } .face > :not(.btn-col) { display:none; } .title-block,.passes { display:none; } .focus { max-width:90vw; max-height:60vh; } .hud { left:16px; right:16px; } .hud.t > div:nth-child(2) { display:none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="reg" viewBox="0 0 34 34"><circle cx="17" cy="17" r="9" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M17 0v34M0 17h34" stroke="currentColor" stroke-width="1.2"/></symbol></svg>
+<div id="stage" class="glass">
+  <svg class="reg tl"><use href="#reg"/></svg><svg class="reg tr"><use href="#reg"/></svg><svg class="reg bl"><use href="#reg"/></svg><svg class="reg br"><use href="#reg"/></svg>
+
+  <div id="field"></div><div class="scrim"></div><svg class="reg" id="vp"><use href="#reg"/></svg>
+  <div class="hud t slug" id="hudt"><div><b>ALLCVZ</b> / FIELD<br><i id="status">OUT OF REGISTER · POINT AT ANYTHING TO LOCK IT</i></div><div style="text-align:center"><span class="seg" id="bpm" style="font-size:30px">118.0</span><br><i>BPM · EVERYTHING MOVES ON THE COUNT</i></div><div style="text-align:right"><span class="seg" id="count" style="font-size:22px">0000</span><br><i>COUNT</i></div></div>
+  <div class="hud b slug"><div><span style="color:var(--ink-a)">● PULLS 24</span> &nbsp; BLANKS 12 &nbsp; TRANSMISSIONS 17 &nbsp; SIDES &nbsp; OPERATOR &nbsp; LINE IN</div><div class="ctl"><span class="key">I</span>INDEX &nbsp; <span class="key">0</span>HOLD STILL &nbsp; <i>PITCH</i> <input type="range" id="pitch" min="0" max="2" step="0.05" value="1"></div></div>
+
+  <div id="lock" class="layer off">
+    <div class="title-block"><div class="slug"><b id="lk-num">PULL 11 / 24</b> · IN REGISTER</div><div class="plate-type" id="lk-title">Dorsia<br>Nº11</div><div class="slug" style="margin-top:22px" id="lk-cap">POSTER · 3 COLOUR<br><i>THE MACHINE RE-INKS ITSELF IN THE COLOURS OF WHATEVER YOU ARE LOOKING AT.</i></div></div>
+    <img class="focus" id="lk-img" src="" alt="">
+    <div class="passes slug"><i>SEPARATIONS</i><div id="lk-passes"></div></div>
+    <div class="hud t slug"><div><b>ALLCVZ</b> / PULLS / <span id="lk-slug">DORSIA-11</span><br><i>ALLCVZ.COM/PULL/<span id="lk-slug2">DORSIA-11</span></i></div><div style="text-align:right"><b>LOCKED</b><br><i>ESC — BACK TO THE FIELD · ← → NEXT</i></div></div>
+  </div>
+
+  <div id="index" class="layer off">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px"><div class="plate-type">Job ticket</div><div class="slug" style="text-align:right;color:#111">EVERYTHING IN THE MACHINE, AS A PLAIN LIST<br>NO MOTION · NO GLASS · EVERY LINE IS A LINK · <b style="color:#8a2a1a">ESC TO CLOSE</b></div></div>
+    <div class="cols" id="ix-cols"></div>
+  </div>
+
+  <div id="dots" class="layer off"><div class="dotfield" id="dotfield"></div></div>
+
+  <div id="boot" class="layer">
+    <div class="tube"><div class="ghost plate-type" id="ghost"><span>CVZ</span></div>
+      <div class="slug" id="burn" style="position:absolute;left:34px;bottom:26px;opacity:0"><b>BURNING SCREEN 01</b> · 45° · <span id="lpi">12</span> LPI<br><i>HOLD STILL. THE IMAGE IS BEING MADE.</i></div></div>
+    <div class="face">
+      <div class="slug"><div class="serial">ALLCVZ · MODEL 4444<br><i>RASTER ENGINE — MADE IN NASHVILLE</i></div><div style="margin-top:16px"><i>INK</i><div class="bars"><span style="background:#e60200"></span><span style="background:#eee400"></span><span style="background:#1f4bff"></span><span style="background:#ff5db5"></span><span style="background:#fc8c00"></span><span style="background:#e9e4d4"></span></div></div></div>
+      <div class="btn-col"><div class="btn" id="power"></div><div class="plate-type">Power up</div></div>
+      <div class="slug" style="justify-self:end;text-align:right"><i>COUNT</i><div class="seg" id="bootcount" style="font-size:44px;opacity:.25">000</div><div style="margin-top:14px"><i>PROTOTYPE · CLICK THE BUTTON</i></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const ART = [
+  ["dorsia11",675,"#e60200","#eee400","Dorsia Nº11","POSTER · 3 COLOUR · JULY 4TH · CHARMERS",["#eee400","#e60200","#190300"]],
+  ["nds",900,"#dc0303","#ffeaad","N.D.S","NASHVILLE DANCE SHOW · POSTER · 2 COLOUR",["#ffeaad","#dc0303"]],
+  ["tiger",675,"#db090a","#dddcda","Dorsia 4th of July","POSTER · 2 COLOUR · CHARMERS",["#dddcda","#db090a"]],
+  ["nashville",675,"#fc8c00","#a56300","Nashville Dance Show","POSTER · 2 COLOUR · ROSEMARY & BEAUTY QUEEN",["#fc8c00","#483300"]],
+  ["nothought",900,"#ff5db5","#e48cbc","No Original Thought","ARTWORK · 2 COLOUR",["#ff5db5","#020102"]],
+  ["easter",675,"#942020","#f1eeec","Dorsia Easter","POSTER · 2 COLOUR · CHARMERS",["#f1eeec","#942020"]],
+  ["blueroom",1357,"#2b4dff","#9db4ff","Blue room","TRANSMISSION · STILL · 17 5:22",["#2b4dff"]],
+  ["lovesongs",900,"#ff4fa0","#5a54ff","Love Songs","ARTWORK · SLEEVE",["#ff4fa0","#5a54ff"]],
+  ["kensable",1260,"#ff5d7a","#e9e4d4","Ken Sable","STILL · TRANSMISSION",["#ff5d7a"]],
+  ["marquee",506,"#d9d4c7","#7d7a72","Dorsia Nº2","DINING · DANCING · MARQUEE",["#d9d4c7"]],
+  ["jersey",900,"#ff5a1f","#e9e4d4","Dorsia 10","BLANK · JERSEY",["#ff5a1f","#e9e4d4"]],
+  ["relig",675,"#e60200","#e9e4d4","Religious Holidays","BLANK · TEE",["#e60200"]],
+];
+const N = 34, ZFAR = -3400, ZNEAR = 320, field = $("#field");
+let rs = 7; const rnd = () => ((rs = Math.imul(rs ^ (rs >>> 15), 2246822507) ^ Math.imul(rs ^ (rs >>> 13), 3266489909), (rs ^= rs >>> 16) >>> 0) / 4294967296);
+const sheets = [];
+function place(s, first) {
+  const tall = innerWidth < 800, th = rnd() * 6.28, R = (540 + rnd() * 240) * (tall ? .55 : 1);
+  s.x = Math.cos(th) * R * (tall ? .5 : 1.6); s.y = Math.sin(th) * R * (tall ? 1.3 : .8); s.ry = -Math.cos(th) * 30; s.rx = Math.sin(th) * 8;
+  s.z = first ? ZFAR + rnd() * (ZNEAR - ZFAR) : ZFAR - rnd() * 300; s.ph = rnd() * 6.28; s.amp = 5 + rnd() * 13;
+}
+for (let i = 0; i < N; i++) {
+  const a = ART[i % ART.length], h = 380, w = h * a[1] / 900, s = { a, w, h, lock: 0, el: document.createElement("div"), i };
+  s.el.className = "sheet"; s.el.style.cssText = `width:${w}px;height:${h}px;margin:${-h/2}px 0 0 ${-w/2}px;--c:${a[2]};--c2:${a[3]};--m:url(assets/${a[0]}_htc.png)`;
+  s.el.innerHTML = `<div class="ht"></div><div class="ht b"></div><img class="full" src="assets/${a[0]}_full.jpg" alt="" draggable="false"><div class="box"><i>LOCKING <span class="pct">0</span>% · ${a[4].toUpperCase()}</i></div>
+    <svg class="mk" style="left:-24px;top:-24px"><use href="#reg"/></svg><svg class="mk" style="right:-24px;bottom:-24px"><use href="#reg"/></svg>`;
+  s.el.addEventListener("pointerenter", () => hovered = s); s.el.addEventListener("pointerleave", () => { if (hovered === s) hovered = null; });
+  s.el.addEventListener("click", (e) => { e.stopPropagation(); if (s.lock > .5) openLock(s); });
+  place(s, true); field.appendChild(s.el); sheets.push(s);
+}
+let hovered = null, locked = null, pitch = 1, t0 = performance.now(), last = t0, beatT = 0, count = 0, pulse = 0, running = false;
+const BPM = 118, beatLen = 60 / BPM;
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) { pitch = 0; $("#pitch").value = 0; }
+$("#pitch").addEventListener("input", (e) => pitch = +e.target.value);
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; const t = (now - t0) / 1000;
+  if (running && !locked) {
+    beatT += dt * pitch; if (beatT >= beatLen) { beatT -= beatLen; pulse = 1; count++; $("#count").textContent = String(count).padStart(4, "0"); }
+    pulse = Math.max(0, pulse - dt * 4);
+    const speed = (70 + 160 * pulse) * pitch;
+    for (const s of sheets) {
+      s.z += speed * dt; if (s.z > ZNEAR) place(s, false);
+      s.lock += ((hovered === s ? 1 : 0) - s.lock) * Math.min(1, dt * 7);
+      const amp = s.amp * (1 - s.lock) * (0.6 + 0.4 * Math.sin(t * .7 + s.ph)) * (pitch === 0 ? .6 : 1);
+      const ox = Math.cos(t * .9 * pitch + s.ph) * amp, oy = Math.sin(t * .6 * pitch + s.ph) * amp, near = (s.z - ZFAR) / (ZNEAR - ZFAR);
+      s.el.style.transform = `translate3d(${s.x}px,${s.y}px,${s.z}px) rotateY(${s.ry * (1 - s.lock)}deg) rotateX(${s.rx * (1 - s.lock)}deg)`;
+      s.el.style.opacity = Math.min(1, .14 + near * near * 1.0 + s.lock); s.el.style.setProperty("--ox", ox + "px"); s.el.style.setProperty("--oy", oy + "px"); s.el.style.setProperty("--lock", s.lock.toFixed(3));
+      if (s.lock > .01) s.el.querySelector(".pct").textContent = Math.round(s.lock * 100);
+    }
+    $("#status").textContent = hovered ? `LOCKING · ${hovered.a[4].toUpperCase()} — CLICK TO PULL IT OUT` : (pitch === 0 ? "HOLD · THE WORLD IS STILL · PITCH UP TO DRIFT" : "OUT OF REGISTER · POINT AT ANYTHING TO LOCK IT");
+    $("#bpm").textContent = (BPM * pitch).toFixed(1);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function ink(a, b) { document.documentElement.style.setProperty("--ink-a", a); document.documentElement.style.setProperty("--ink-b", b); }
+function openLock(s) {
+  locked = s; const a = s.a; ink(a[2], a[3]); field.classList.add("dim"); $("#hudt").style.opacity = 0;
+  $("#lk-img").src = `assets/${a[0]}_full.jpg`; $("#lk-title").innerHTML = a[4].replace(" ", "<br>"); $("#lk-num").textContent = `PULL ${String(s.i % 24 + 1).padStart(2, "0")} / 24`;
+  $("#lk-cap").innerHTML = a[5] + "<br><i>CAPTION TO BE CONFIRMED BY COLE.</i>"; const slug = a[4].toUpperCase().replace(/[^A-Z0-9]+/g, "-"); $("#lk-slug").textContent = slug; $("#lk-slug2").textContent = slug;
+  $("#lk-passes").innerHTML = a[6].map((c, k) => `<div class="pass"><div class="sw" style="background:${c};outline:1px solid #333"></div><div><b style="color:${c === "#190300" || c === "#020102" || c === "#483300" ? "#d9d4c7" : c}">PASS ${k + 1}</b><br><i>${c.toUpperCase()}</i></div></div>`).join("");
+  $("#lock").classList.remove("off"); $("#lock").classList.add("on"); history.replaceState(null, "", "#pull/" + slug.toLowerCase());
+}
+function closeLock() { locked = null; ink("#1f4bff", "#7fa0ff"); field.classList.remove("dim"); $("#hudt").style.opacity = 1; $("#lock").classList.add("off"); $("#lock").classList.remove("on"); history.replaceState(null, "", " "); }
+function step(d) { if (!locked) return; const i = (sheets.indexOf(locked) + d + N) % N; openLock(sheets[i]); }
+$("#lock").addEventListener("click", (e) => { if (e.target.id !== "lk-img") closeLock(); });
+$("#ix-cols").innerHTML = [["Pulls — 24", ART.slice(0, 6), "P"], ["Blanks — 12", ART.slice(10), "B"], ["Transmissions — 17", ART.slice(6, 10), "TX"]].map(([h, list, p]) =>
+  `<div><h3>${h}</h3><table>${list.map((a, k) => `<tr><td>${p}-${String(k + 1).padStart(2, "0")}</td><td><a href="#" data-i="${ART.indexOf(a)}">${a[4]}</a></td></tr>`).join("")}<tr><td>…</td><td>and the rest</td></tr></table></div>`).join("") +
+  `<div><h3>Operator</h3><table><tr><td>OP</td><td>Cole Anderson — who runs this thing</td></tr></table><h3>Line in</h3><table><tr><td>IN</td><td>Book CVZ · cole.anderson4444@gmail.com · @__c_v_z__</td></tr></table></div>`;
+$("#ix-cols").addEventListener("click", (e) => { const a = e.target.closest("a[data-i]"); if (!a) return; e.preventDefault(); toggleIndex(false); openLock(sheets.find(s => s.a === ART[+a.dataset.i])); });
+function toggleIndex(on) { $("#index").classList.toggle("off", !on); }
+addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { if (!$("#index").classList.contains("off")) toggleIndex(false); else if (locked) closeLock(); }
+  if (e.key.toLowerCase() === "i") toggleIndex($("#index").classList.contains("off"));
+  if (e.key === "0") { pitch = pitch ? 0 : 1; $("#pitch").value = pitch; }
+  if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "Enter" && !running) boot();
+});
+
+// ---- boot sequence: dormant -> burn-in -> through the dot -> field
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+function anim(ms, fn) { return new Promise(r => { const s = performance.now(); (function tick(n) { const p = Math.min(1, (n - s) / ms); fn(p); p < 1 ? requestAnimationFrame(tick) : r(); })(s); }); }
+async function boot() {
+  running = true; $("#power").classList.add("lit"); $("#burn").style.opacity = 1; const g = $("#ghost"); g.style.opacity = 1;
+  await anim(1700, p => { const e = ease(p); g.style.setProperty("--cell", (60 - 44 * e) + "px"); g.style.setProperty("--dot", (12 + 30 * e) + "%"); $("#lpi").textContent = Math.round(12 + 73 * e); $("#bootcount").textContent = String(Math.round(100 * e)).padStart(3, "0"); $("#bootcount").style.opacity = 1; });
+  await anim(350, p => { g.style.filter = `brightness(${1 + 6 * p})`; $("#boot").style.opacity = 1 - p; });
+  $("#boot").classList.add("off"); const d = $("#dotfield"); $("#dots").classList.remove("off");
+  await anim(1500, p => { const e = ease(p); d.style.setProperty("--s", (1 + 14 * e).toFixed(3)); d.style.setProperty("--hole", (e * e * 120) + "px"); $("#dots").style.opacity = 1 - Math.max(0, (p - .75) * 4); });
+  $("#dots").classList.add("off");
+}
+$("#power").addEventListener("click", boot);
+if (location.hash.startsWith("#pull/")) { boot().then(() => { const slug = location.hash.slice(6); const s = sheets.find(x => x.a[4].toUpperCase().replace(/[^A-Z0-9]+/g, "-").toLowerCase() === slug); if (s) openLock(s); }); }
+</script>
+</body>
+</html>

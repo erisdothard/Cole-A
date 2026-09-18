@@ -1,0 +1,21 @@
+# Raw export of the old Wix site (~420 MB of original media). Optimized copies go in the app's public dir.
+reference/wix-export/images/
+reference/wix-export/video/
+
+node_modules/
+.next/
+out/
+.env*
+.DS_Store
+
+# Third-party reference footage (copyrighted) — never commit
+reference/trailer/
+public/media
+shots/
+
+# derived media (regenerate: scripts/build-archive.py + ffmpeg pass in session notes)
+reference/wix-export/tx/
+reference/wix-export/web/
+reference/wix-export/sheets/
+docs/concept/frames/proto/
+reference/trailer/

@@ -1,0 +1,595 @@
+[
+ {
+  "page": "home",
+  "section": "hero",
+  "video_id": "05be8c_39e24e1c9134441a9415f79ea9f84af5"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 0,
+  "image": "05be8c_63bc4487cf954833a2f26f85c7fd32a7f000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 148,
+   "y": 373,
+   "w": 326,
+   "h": 217
+  },
+  "video_id": "05be8c_63bc4487cf954833a2f26f85c7fd32a7"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 1,
+  "image": "05be8c_7568f02e6b2f483c83b95ebc208a9eeff000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 557,
+   "y": 373,
+   "w": 326,
+   "h": 217
+  },
+  "video_id": "05be8c_7568f02e6b2f483c83b95ebc208a9eef"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 2,
+  "image": "05be8c_5fdfe55ce9a34d3c9ba87a5f287f69bef000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 963,
+   "y": 373,
+   "w": 326,
+   "h": 217
+  },
+  "video_id": "05be8c_5fdfe55ce9a34d3c9ba87a5f287f69be"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 3,
+  "image": "05be8c_61b8fb0d33184c40bce87afa3f6511a9f000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 148,
+   "y": 620,
+   "w": 326,
+   "h": 224
+  },
+  "video_id": "05be8c_61b8fb0d33184c40bce87afa3f6511a9"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 4,
+  "image": "05be8c_053e9a5bd2c343a3bb5fd313031c47cef000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 557,
+   "y": 620,
+   "w": 326,
+   "h": 224
+  },
+  "video_id": "05be8c_053e9a5bd2c343a3bb5fd313031c47ce"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 5,
+  "image": "05be8c_cd4bf0e389904c11b515e7da10e3fdbff000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 963,
+   "y": 620,
+   "w": 326,
+   "h": 224
+  },
+  "video_id": "05be8c_cd4bf0e389904c11b515e7da10e3fdbf"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 6,
+  "image": "05be8c_88031b38c4f446c0af89d5116dc5c12ef000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 148,
+   "y": 871,
+   "w": 326,
+   "h": 222
+  },
+  "video_id": "05be8c_88031b38c4f446c0af89d5116dc5c12e"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 7,
+  "image": "05be8c_4f5db38bc7de46768c3d5a29e5cc509df000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 557,
+   "y": 871,
+   "w": 326,
+   "h": 224
+  },
+  "video_id": "05be8c_4f5db38bc7de46768c3d5a29e5cc509d"
+ },
+ {
+  "page": "work",
+  "section": "video",
+  "order": 8,
+  "image": "05be8c_d2f6df4ea68544c7b74f68f2d3534b12f000.jpg",
+  "alt": "",
+  "layout": {
+   "x": 963,
+   "y": 871,
+   "w": 326,
+   "h": 224
+  },
+  "video_id": "05be8c_d2f6df4ea68544c7b74f68f2d3534b12"
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 9,
+  "image": "05be8c_3327a741bde34e3ba9fe8bdf2de5f4ce~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 0,
+   "y": 1337,
+   "w": 352,
+   "h": 352
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 10,
+  "image": "05be8c_7eddafd57030418fa2ce5f01b9579b94~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 362,
+   "y": 1337,
+   "w": 352,
+   "h": 469
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 11,
+  "image": "05be8c_68ddc0d66d81498eb9c0907a664dc098~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 724,
+   "y": 1337,
+   "w": 352,
+   "h": 352
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 12,
+  "image": "05be8c_f009017f27014fe2a2d6966ce4ca6f2c~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 1086,
+   "y": 1337,
+   "w": 351,
+   "h": 351
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 13,
+  "image": "05be8c_9056284f38954341b17f7a23cb7099d8~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 1086,
+   "y": 1698,
+   "w": 351,
+   "h": 223
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 14,
+  "image": "05be8c_ee6375382d754ccbaa155ab21a3ad292~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 0,
+   "y": 1699,
+   "w": 352,
+   "h": 251
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 15,
+  "image": "05be8c_9b78ba43ac9841329ab5525ed70e5f7f~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 724,
+   "y": 1699,
+   "w": 352,
+   "h": 352
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 16,
+  "image": "05be8c_a7b17fe824954e2c9b4841a3df107075~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 362,
+   "y": 1816,
+   "w": 352,
+   "h": 352
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 17,
+  "image": "05be8c_8512435d0af44acf895ef9e31ef91412~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 1086,
+   "y": 1931,
+   "w": 351,
+   "h": 351
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 18,
+  "image": "05be8c_ae0ed4ecb0b84424a4422b794c1d3de3~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 0,
+   "y": 1960,
+   "w": 352,
+   "h": 279
+  }
+ },
+ {
+  "page": "work",
+  "section": "merch",
+  "order": 19,
+  "image": "05be8c_08a2aeb30d384cda950f29c7429897fe~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 724,
+   "y": 2061,
+   "w": 352,
+   "h": 352
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 0,
+  "image": "05be8c_d588ef98e95c440e8f03762e0b05cb10~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 271,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 1,
+  "image": "05be8c_50b92c3b9ebc4c218ab8c04f26fa173a~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 271,
+   "w": 237,
+   "h": 316
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 2,
+  "image": "05be8c_3aa739c64b534d9bbc86cac8671d1c85f003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 730,
+   "y": 271,
+   "w": 237,
+   "h": 421
+  },
+  "video_id": "05be8c_3aa739c64b534d9bbc86cac8671d1c85"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 3,
+  "image": "05be8c_f01f660880464c05b1eaa46ff73f0f76~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 271,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 4,
+  "image": "05be8c_bac5d591b9a046eba857a0bf3dd2d5bf~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 528,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 5,
+  "image": "05be8c_8c95ad0b3d114a3abfc8872fed75b8f9~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 528,
+   "w": 237,
+   "h": 133
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 6,
+  "image": "05be8c_8fe9c6d0c30f42d886a03b38994e9cf3~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 607,
+   "w": 237,
+   "h": 169
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 7,
+  "image": "05be8c_50e5c1d25a4b4d45b2b5e19f1d0e3501~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 681,
+   "w": 237,
+   "h": 158
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 8,
+  "image": "05be8c_499afd3a8a0144d18543de5520cfcf0b~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 730,
+   "y": 712,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 9,
+  "image": "05be8c_3c162c8338c549f0811b7f9e2fd44edbf003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 785,
+   "w": 237,
+   "h": 133
+  },
+  "video_id": "05be8c_3c162c8338c549f0811b7f9e2fd44edb"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 10,
+  "image": "05be8c_8cc6c94d91d24e6aa8393b339809c589f003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 796,
+   "w": 237,
+   "h": 178
+  },
+  "video_id": "05be8c_8cc6c94d91d24e6aa8393b339809c589"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 11,
+  "image": "05be8c_50ace602c61d460bac01384e6c107a4cf003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 859,
+   "w": 237,
+   "h": 421
+  },
+  "video_id": "05be8c_50ace602c61d460bac01384e6c107a4c"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 12,
+  "image": "05be8c_0fd3ae635ec9469a874762b933c95f96~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 938,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 13,
+  "image": "05be8c_f10c02ae2b4f4d2f8f14abec4c5ec0a1~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 730,
+   "y": 969,
+   "w": 237,
+   "h": 316
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 14,
+  "image": "05be8c_9a56b6a81bf9468d8d0172853acb7f64~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 994,
+   "w": 237,
+   "h": 155
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 15,
+  "image": "05be8c_b6daf8610b574c779d1f6d59554eccc2f003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 1169,
+   "w": 237,
+   "h": 421
+  },
+  "video_id": "05be8c_b6daf8610b574c779d1f6d59554eccc2"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 16,
+  "image": "05be8c_a273ae7750344cc1ad13fb1eacd1e3ea~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 1195,
+   "w": 237,
+   "h": 316
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 17,
+  "image": "05be8c_a863edc50b3c4a9c9b4c395e3422bd64~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 1300,
+   "w": 237,
+   "h": 157
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 18,
+  "image": "05be8c_76d27b7529314cb18704471c7ae86849~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 730,
+   "y": 1305,
+   "w": 237,
+   "h": 237
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 19,
+  "image": "05be8c_bb62ec661740453cbbf95a091e299718~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 987,
+   "y": 1477,
+   "w": 237,
+   "h": 316
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 20,
+  "image": "05be8c_79d9aa5561a948c1bb1512fe91eaf675f003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 1531,
+   "w": 237,
+   "h": 133
+  },
+  "video_id": "05be8c_79d9aa5561a948c1bb1512fe91eaf675"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 21,
+  "image": "05be8c_a4c592df2b994043b7023f2b4b13e44e~mv2.jpg",
+  "alt": "",
+  "layout": {
+   "x": 730,
+   "y": 1562,
+   "w": 237,
+   "h": 157
+  }
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 22,
+  "image": "05be8c_aa40adb416f94bcf8fd62925e08fdf23f003.jpg",
+  "alt": "",
+  "layout": {
+   "x": 473,
+   "y": 1610,
+   "w": 237,
+   "h": 133
+  },
+  "video_id": "05be8c_aa40adb416f94bcf8fd62925e08fdf23"
+ },
+ {
+  "page": "about",
+  "section": "portfolio",
+  "order": 23,
+  "image": "05be8c_fefd15c50d8148dfa9a28f5e6d7bbc4f~mv2.png",
+  "alt": "",
+  "layout": {
+   "x": 216,
+   "y": 1684,
+   "w": 237,
+   "h": 237
+  }
+ }
+]

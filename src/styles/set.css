@@ -1,0 +1,50 @@
+/* The set in the room. Built in CSS, no images: a late-70s/80s colour
+   television — black plastic cabinet, curved glass, dial, knobs, POWER. */
+
+:root {
+  --osd: 'VT323', 'Courier New', monospace;
+  --chy: 'Anton', Impact, sans-serif;
+  --room: #050505;
+  --plastic: #17171a;
+  --plastic-hi: #2a2a2f;
+  --legend: #cfc9b8;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: var(--room); color: var(--legend); font-family: var(--osd); overflow: hidden; }
+button { font: inherit; }
+
+.room { position: fixed; inset: 0; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 60%, #121214 0%, #050505 60%); transition: opacity .6s; z-index: 100; }
+.room.push { transition: opacity .6s; }
+.room.gone { opacity: 0; pointer-events: none; }
+
+.set { position: relative; width: min(92vw, 1180px); transition: transform 1.9s cubic-bezier(.55, 0, .9, .35); will-change: transform; }
+.cabinet { display: grid; grid-template-columns: 1fr 190px; gap: 22px; padding: 26px; border-radius: 22px; background: linear-gradient(180deg, var(--plastic-hi), var(--plastic) 30%, #0e0e10); box-shadow: inset 0 2px 0 #3a3a40, inset 0 -3px 0 #000, 0 40px 80px #000, 0 0 0 1px #000; }
+@media (max-width: 800px) { .cabinet { grid-template-columns: 1fr; } }
+.bezel { padding: 18px; border-radius: 18px; background: linear-gradient(180deg, #0c0c0e, #050506); box-shadow: inset 0 0 0 1px #2b2b30, inset 0 0 40px #000; }
+.glass { position: relative; aspect-ratio: 4 / 3; border-radius: 9% / 12%; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #1a1c1f 0%, #0b0c0e 60%, #050506 100%); box-shadow: inset 0 0 90px #000, inset 0 0 0 2px #000; }
+.glass::before { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.07) 0%, transparent 35%, transparent 70%, rgba(255,255,255,.03) 100%); pointer-events: none; }
+.tube-off { position: absolute; inset: 0; background: #000; opacity: 0; }
+.tube-off.line { opacity: 1; background: linear-gradient(#000 0 calc(50% - 1px), #fff calc(50% - 1px) calc(50% + 1px), #000 calc(50% + 1px)); box-shadow: 0 0 40px #fff; transition: none; }
+.tube-off.open { animation: open .5s cubic-bezier(.2, .8, .2, 1) forwards; }
+@keyframes open { from { clip-path: inset(49.5% 0 49.5% 0); background: #fff; } to { clip-path: inset(0 0 0 0); background: #dfe6ff; } }
+.glass.snow .tube-off { background: repeating-radial-gradient(circle at 30% 40%, #fff 0 1px, #000 1px 3px), repeating-linear-gradient(90deg, #aaa 0 1px, #222 1px 2px); background-blend-mode: difference; animation: snow .08s steps(2) infinite; opacity: 1; }
+@keyframes snow { to { background-position: 7px 13px, 3px 0; } }
+
+.panel { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; gap: 16px; padding: 6px 4px; }
+@media (max-width: 800px) { .panel { flex-direction: row; flex-wrap: wrap; align-items: center; } .knobs { display: none !important; } }
+.brand { display: flex; flex-direction: column; gap: 4px; }
+.brand__name { font-family: var(--chy); font-size: 34px; letter-spacing: .08em; color: #e8e2d0; text-shadow: 0 1px 0 #000, 0 -1px 0 #444; }
+.brand__line { font-size: 13px; letter-spacing: .12em; color: #7c776a; }
+.dial { position: relative; width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; background: conic-gradient(from 0deg, #2a2a2f, #0f0f11 20%, #2a2a2f 40%, #0f0f11 60%, #2a2a2f 80%, #0f0f11); box-shadow: inset 0 0 0 4px #000, 0 6px 14px #000, 0 0 0 1px #333; }
+.dial::before { content: "2 3 4 5 6 7 8 9 10 11 12 13"; position: absolute; inset: -22px; font-size: 12px; color: #7c776a; letter-spacing: .5em; text-align: center; line-height: 164px; white-space: nowrap; overflow: hidden; border-radius: 50%; }
+.dial__knob { position: absolute; inset: 26px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #3a3a40, #101012 70%); box-shadow: 0 4px 10px #000; }
+.dial__knob::after { content: ""; position: absolute; left: 50%; top: 4px; width: 3px; height: 22px; margin-left: -1.5px; background: #e8e2d0; }
+.knobs { display: flex; justify-content: space-around; }
+.knob { position: relative; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #35353b, #0f0f11 70%); box-shadow: 0 3px 8px #000; }
+.knob i { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; letter-spacing: .1em; color: #7c776a; }
+.power { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; height: 62px; border: 0; border-radius: 6px; cursor: pointer; color: #e8e2d0; letter-spacing: .3em; font-size: 20px; background: linear-gradient(180deg, #34343a, #1b1b1f); box-shadow: 0 5px 0 #000, 0 8px 18px #000, inset 0 1px 0 #55555c; transition: transform .08s, box-shadow .08s; }
+.power:hover { background: linear-gradient(180deg, #3c3c43, #202025); }
+.power:active, .set.on .power { transform: translateY(4px); box-shadow: 0 1px 0 #000, 0 3px 8px #000, inset 0 1px 0 #55555c; }
+.power__led { width: 10px; height: 10px; border-radius: 50%; background: #3a0d0d; box-shadow: inset 0 0 2px #000; }
+.power__led.on { background: #ff3b30; box-shadow: 0 0 10px #ff3b30, 0 0 22px #ff3b30; }
+.foot { height: 16px; margin: 0 40px; border-radius: 0 0 10px 10px; background: linear-gradient(#0d0d0f, #000); }

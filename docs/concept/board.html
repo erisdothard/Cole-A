@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ALLCVZ — styleframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Martian+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css">
+<style>
+  :root {
+    --ground: #050506; --panel: #0d0d0f; --legend: #d9d4c7; --dim: #6d6a63; --paper: #e9e4d4;
+    --cvz: #1f4bff; --cvz-hi: #7fa0ff;
+    --ink-a: var(--cvz); --ink-b: var(--cvz-hi);
+    --plate: "Big Shoulders Display", Impact, sans-serif; --slug: "Martian Mono", ui-monospace, monospace; --seg: "DSEG14 Classic", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #1a1a1a; color: var(--legend); font-family: var(--slug); display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px; }
+  .frame { position: relative; width: 1600px; height: 900px; background: var(--ground); overflow: hidden; flex: none; }
+  .frame.m { width: 390px; height: 844px; }
+  .mobiles { display: flex; gap: 40px; }
+  /* line raster + phosphor vignette shared by every frame: the glass */
+  .glass::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.26) 0 1px, transparent 1px 3px), radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .slug { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 400; line-height: 1.7; }
+  .slug b { color: var(--ink-a); font-weight: 600; } .slug i { font-style: normal; color: var(--dim); }
+  .plate-type { font-family: var(--plate); font-weight: 900; text-transform: uppercase; line-height: .82; letter-spacing: -.01em; }
+  .seg { font-family: var(--seg); color: var(--ink-a); text-shadow: 0 0 12px color-mix(in srgb, var(--ink-a) 70%, transparent); }
+  .reg { position: absolute; width: 34px; height: 34px; color: var(--legend); opacity: .85; }
+  .reg.tl { left: 26px; top: 26px; } .reg.tr { right: 26px; top: 26px; } .reg.bl { left: 26px; bottom: 26px; } .reg.br { right: 26px; bottom: 26px; }
+  .bars { display: flex; gap: 3px; } .bars span { width: 22px; height: 12px; display: block; }
+  .hud { position: absolute; z-index: 40; }
+  .hud.t { top: 30px; left: 84px; right: 84px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .hud.b { bottom: 30px; left: 84px; right: 84px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .key { display: inline-block; border: 1px solid currentColor; padding: 1px 7px; margin-right: 6px; border-radius: 2px; }
+  .chan { display: flex; gap: 26px; } .chan span.on { color: var(--ink-a); } .chan span.on::before { content: "● "; }
+
+  /* F1 / F2 — faceplate */
+  .tube { position: absolute; left: 84px; right: 84px; top: 84px; height: 560px; border-radius: 28px / 22px; background: radial-gradient(ellipse at 50% 40%, #0c0d12 0%, #020203 70%); box-shadow: inset 0 0 0 2px #1b1b1e, inset 0 0 120px #000; overflow: hidden; }
+  .ghost { position: absolute; inset: 0; display: grid; place-items: center; font-size: 400px; letter-spacing: .03em; color: var(--ink-a);
+    -webkit-mask-image: radial-gradient(circle at center, #000 var(--dot, 34%), transparent calc(var(--dot, 34%) + 6%)); -webkit-mask-size: var(--cell, 26px) var(--cell, 26px);
+    mask-image: radial-gradient(circle at center, #000 var(--dot, 34%), transparent calc(var(--dot, 34%) + 6%)); mask-size: var(--cell, 26px) var(--cell, 26px); }
+  .ghost span { display: block; }
+  .face { position: absolute; left: 84px; right: 84px; bottom: 70px; height: 160px; display: grid; grid-template-columns: 1.1fr 1.4fr 1.1fr; align-items: center; }
+  .btn { width: 118px; height: 118px; border-radius: 50%; margin: 0 auto; background: radial-gradient(circle at 38% 32%, #3a3a3e, #121214 62%, #050506); box-shadow: 0 0 0 6px #0a0a0b, 0 0 0 7px #2b2b2f, 0 10px 30px #000; }
+  .btn.lit { background: radial-gradient(circle at 42% 36%, #fff, var(--ink-b) 30%, var(--ink-a) 70%); box-shadow: 0 0 0 6px #0a0a0b, 0 0 0 7px #2b2b2f, 0 0 80px 10px color-mix(in srgb, var(--ink-a) 80%, transparent); }
+  .btn-col { text-align: center; } .btn-col .plate-type { font-size: 44px; margin-top: 16px; letter-spacing: .04em; color: var(--legend); }
+  .fader { width: 260px; height: 6px; background: #1d1d20; border-radius: 3px; position: relative; margin-top: 10px; } .fader::after { content: ""; position: absolute; left: var(--pos, 50%); top: -9px; width: 14px; height: 24px; background: var(--legend); border-radius: 2px; }
+  .serial { border: 1px solid var(--dim); padding: 8px 12px; display: inline-block; }
+
+  /* F3 — the field */
+  .field { position: absolute; inset: 0; perspective: 1100px; perspective-origin: 50% 47%; z-index: 1; isolation: isolate; overflow: hidden; }
+  .scrim { position: absolute; inset: 0; z-index: 30; pointer-events: none; background: linear-gradient(180deg, rgba(5,5,6,.92) 0, rgba(5,5,6,.55) 13%, transparent 24%, transparent 80%, rgba(5,5,6,.6) 90%, rgba(5,5,6,.94) 100%); }
+  .sheet { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; }
+  .sheet .ht { position: absolute; inset: 0; background: var(--c); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .sheet .ht.b { transform: translate(var(--ox), var(--oy)); background: var(--c2); mix-blend-mode: screen; opacity: .9; }
+  .sheet .mk { position: absolute; width: 16px; height: 16px; color: #fff; opacity: .7; }
+  .sheet img.pl { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* F2b — through the dot */
+  .dots { position: absolute; inset: -40%; transform: rotate(22deg); background: radial-gradient(circle, var(--cvz) 0 37%, transparent 39%) 0 0 / 300px 300px;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 250px, #000 252px); mask-image: radial-gradient(circle at 50% 50%, transparent 0 250px, #000 252px); filter: drop-shadow(0 0 40px rgba(31,75,255,.6)); }
+  .port { position: absolute; left: 50%; top: 50%; width: 440px; height: 440px; margin: -220px 0 0 -220px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 3px var(--cvz-hi), 0 0 120px rgba(31,75,255,.7), inset 0 0 80px #000; z-index: 5; }
+  .port .field { inset: -230px -580px; transform: scale(.62); }
+  .lockbox { position: absolute; z-index: 35; border: 1px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.6), 0 0 40px rgba(127,160,255,.5); }
+  .lockbox::before, .lockbox::after { content: ""; position: absolute; width: 18px; height: 18px; border: 3px solid #fff; }
+  .lockbox::before { left: -3px; top: -3px; border-right: 0; border-bottom: 0; } .lockbox::after { right: -3px; bottom: -3px; border-left: 0; border-top: 0; }
+  .lockbox .slug { position: absolute; left: 0; top: calc(100% + 8px); white-space: nowrap; color: #fff; }
+
+  /* F4 — a pull in register */
+  .focus { z-index: 60; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 1px var(--ink-a), 0 0 120px color-mix(in srgb, var(--ink-a) 35%, transparent); }
+  .passes { position: absolute; right: 84px; top: 150px; width: 300px; } .pass { display: grid; grid-template-columns: 46px 1fr; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid #2a2a2a; }
+  .pass .sw { height: 46px; } .title-block { position: absolute; left: 84px; top: 150px; width: 330px; } .title-block .plate-type { font-size: 120px; color: var(--ink-a); }
+
+  /* F5 — transmission */
+  .tx { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%); width: 980px; height: 560px; border-radius: 22px / 18px; overflow: hidden; box-shadow: 0 0 0 1px var(--ink-a), 0 0 140px color-mix(in srgb, var(--ink-a) 40%, transparent); }
+  .tx img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.2) contrast(1.1); }
+  .tx::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.5) 0 2px, transparent 2px 5px); }
+  .wave { position: absolute; left: 310px; right: 310px; bottom: 96px; height: 44px; display: flex; align-items: center; gap: 2px; } .wave span { flex: 1; background: var(--ink-a); opacity: .85; } .wave span.p { background: #fff; opacity: 1; }
+
+  /* F6 — index / job ticket */
+  .ticket { position: absolute; inset: 0; background: var(--paper); color: #111; padding: 70px 110px; }
+  .ticket .plate-type { font-size: 150px; } .ticket table { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  .ticket td { border-top: 1px solid #111; padding: 9px 8px 9px 0; vertical-align: top; } .ticket td:first-child { width: 90px; color: #8a2a1a; } .ticket .cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 46px; }
+  .ticket h3 { font-family: var(--plate); font-size: 40px; margin: 34px 0 0; text-transform: uppercase; }
+  .ticket .reg { color: #111; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="reg" viewBox="0 0 34 34"><circle cx="17" cy="17" r="9" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M17 0v34M0 17h34" stroke="currentColor" stroke-width="1.2"/></symbol></svg>
+
+<!-- F1 · DORMANT -->
+<section class="frame" id="f1">
+  <svg class="reg tl"><use href="#reg"/></svg><svg class="reg tr"><use href="#reg"/></svg><svg class="reg bl"><use href="#reg"/></svg><svg class="reg br"><use href="#reg"/></svg>
+  <div class="tube glass"><div class="ghost plate-type" style="--dot:10%; --cell:20px; opacity:.22"><span>CVZ</span></div></div>
+  <div class="face">
+    <div class="slug"><div class="serial">ALLCVZ · MODEL 4444<br><i>RASTER ENGINE — MADE IN NASHVILLE</i></div><div style="margin-top:16px"><i>INK</i><div class="bars" style="margin-top:6px"><span style="background:#e60200"></span><span style="background:#eee400"></span><span style="background:#1f4bff"></span><span style="background:#ff5db5"></span><span style="background:#fc8c00"></span><span style="background:#e9e4d4"></span></div></div></div>
+    <div class="btn-col"><div class="btn"></div><div class="plate-type">Power up</div></div>
+    <div class="slug" style="justify-self:end; text-align:right"><i>COUNT</i><div class="seg" style="font-size:44px; opacity:.18; --ink-a:#d9d4c7">000</div><div style="margin-top:14px"><i>PITCH — 0 HOLDS THE WORLD STILL</i><div class="fader" style="--pos:0%; margin-left:auto"></div></div></div>
+  </div>
+</section>
+
+<!-- F2 · BURN-IN -->
+<section class="frame" id="f2">
+  <svg class="reg tl"><use href="#reg"/></svg><svg class="reg tr"><use href="#reg"/></svg><svg class="reg bl"><use href="#reg"/></svg><svg class="reg br"><use href="#reg"/></svg>
+  <div class="tube glass" style="box-shadow: inset 0 0 0 2px #1b1b1e, inset 0 0 160px #000, 0 0 160px rgba(31,75,255,.25)">
+    <div class="ghost plate-type" style="--dot:38%; --cell:20px"><span>CVZ</span></div>
+    <div class="slug" style="position:absolute; left:34px; bottom:26px"><b>BURNING SCREEN 01</b> · 45° · 12 LPI → 85 LPI<br><i>HOLD STILL. THE IMAGE IS BEING MADE.</i></div>
+    <div class="slug" style="position:absolute; right:34px; bottom:26px; text-align:right"><i>EXPOSURE</i> <b>014 / 100</b></div>
+  </div>
+  <div class="face">
+    <div class="slug"><div class="serial">ALLCVZ · MODEL 4444<br><i>RASTER ENGINE — MADE IN NASHVILLE</i></div><div style="margin-top:16px"><i>INK</i><div class="bars" style="margin-top:6px"><span style="background:#e60200"></span><span style="background:#eee400"></span><span style="background:#1f4bff; outline:1px solid #fff; outline-offset:2px"></span><span style="background:#ff5db5"></span><span style="background:#fc8c00"></span><span style="background:#e9e4d4"></span></div></div></div>
+    <div class="btn-col"><div class="btn lit"></div><div class="plate-type" style="color:var(--ink-b)">Power up</div></div>
+    <div class="slug" style="justify-self:end; text-align:right"><i>COUNT</i><div class="seg" style="font-size:44px">014</div><div style="margin-top:14px"><i>PITCH</i> <b>118.0</b><div class="fader" style="--pos:58%; margin-left:auto"></div></div></div>
+  </div>
+</section>
+
+<!-- F2b · THROUGH THE DOT -->
+<section class="frame glass" id="f2b">
+  <div class="dots"></div>
+  <div class="port"><div class="field" id="field2b"></div></div><div class="scrim" style="z-index:4"></div>
+  <svg class="reg" style="left:783px; top:433px; z-index:36"><use href="#reg"/></svg>
+  <div class="hud t slug"><div><b>SCREEN 01 BURNED</b><br><i>EVERY DOT IN A HALFTONE IS A HOLE. YOU GO THROUGH THE HOLE.</i></div><div style="text-align:right"><b>PASSING DOT R12 · C31</b><br><i>22° · 12 LPI</i></div></div>
+  <div class="hud b slug"><div><i>RETURNING VISITORS SKIP STRAIGHT TO THE FIELD</i></div><div><span class="key">ANY KEY</span>SKIP</div></div>
+</section>
+
+<!-- F3 · THE FIELD, OUT OF REGISTER -->
+<section class="frame glass" id="f3">
+  <div class="field" id="field3"></div><div class="scrim"></div><svg class="reg" style="left:783px; top:406px; z-index:35; opacity:.5"><use href="#reg"/></svg><div class="lockbox" style="left:634px; top:566px; width:228px; height:228px"><div class="slug"><b style="color:#ff8ad0">LOCKING 62%</b> · P-09 LOVE SONGS · PASS 2 SLIDING IN</div></div>
+  <div class="hud t slug"><div><b>ALLCVZ</b> / FIELD<br><i>61 OBJECTS · DRIFTING</i></div><div style="text-align:center"><span class="seg" style="font-size:30px">118.0</span><br><i>BPM · EVERYTHING MOVES ON THE COUNT</i></div><div style="text-align:right"><b>OUT OF REGISTER</b><br><i>POINT AT ANYTHING TO LOCK IT</i></div></div>
+  <div class="hud b slug"><div class="chan"><span class="on">PULLS 24</span><span>BLANKS 12</span><span>TRANSMISSIONS 17</span><span>SIDES</span><span>OPERATOR</span><span>LINE IN</span></div><div><span class="key">I</span>INDEX — THE PLAIN LIST <span class="key" style="margin-left:18px">0</span>HOLD STILL</div></div>
+  <svg class="reg tl"><use href="#reg"/></svg><svg class="reg tr"><use href="#reg"/></svg><svg class="reg bl"><use href="#reg"/></svg><svg class="reg br"><use href="#reg"/></svg>
+</section>
+
+<!-- F4 · A PULL, IN REGISTER -->
+<section class="frame glass" id="f4" style="--ink-a:#e60200; --ink-b:#eee400">
+  <div class="field" id="field4" style="opacity:.28; filter: blur(1.5px)"></div>
+  <div class="title-block"><div class="slug"><b>PULL 11 / 24</b> · IN REGISTER</div><div class="plate-type" style="margin-top:14px">Dorsia<br>Nº11</div><div class="slug" style="margin-top:22px">POSTER · 3 COLOUR<br>JULY 4TH · 7PM · CHARMERS<br><i>THE MACHINE RE-INKS ITSELF IN THE COLOURS OF WHATEVER YOU ARE LOOKING AT.</i></div></div>
+  <div class="focus" style="width:465px; height:620px"><img src="assets/dorsia11_full.jpg" style="width:100%; height:100%; display:block" alt=""></div>
+  <div class="passes slug"><i>SEPARATIONS — CLICK A PASS TO PULL IT OUT</i>
+    <div class="pass" style="margin-top:12px"><div class="sw" style="background:#eee400"></div><div><b style="color:#eee400">PASS 1</b> · YELLOW<br><i>FLOOD · 110 MESH</i></div></div>
+    <div class="pass"><div class="sw" style="background:#e60200"></div><div><b>PASS 2</b> · RED<br><i>45° · HALFTONE SKY</i></div></div>
+    <div class="pass" style="border-bottom:1px solid #2a2a2a"><div class="sw" style="background:#190300; outline:1px solid #444"></div><div><b style="color:#d9d4c7">PASS 3</b> · BLACK<br><i>KEY LINE</i></div></div>
+  </div>
+  <div class="hud t slug"><div><b>ALLCVZ</b> / PULLS / DORSIA-11<br><i>ALLCVZ.COM/PULL/DORSIA-11</i></div><div style="text-align:right"><b>LOCKED</b><br><i>ESC — BACK TO THE FIELD</i></div></div>
+  <div class="hud b slug"><div><span class="key">←</span>PULL 10 · NASHVILLE DANCE SHOW <span class="key" style="margin-left:22px">→</span>PULL 12 · NO ORIGINAL THOUGHT</div><div><span class="key">I</span>INDEX</div></div>
+  <svg class="reg tl" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg tr" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg bl" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg br" style="color:var(--ink-b)"><use href="#reg"/></svg>
+</section>
+
+<!-- F5 · A TRANSMISSION -->
+<section class="frame glass" id="f5" style="--ink-a:#2b4dff; --ink-b:#9db4ff">
+  <div class="field" id="field5" style="opacity:.22; filter: blur(2px)"></div>
+  <div class="tx"><img src="assets/blueroom_full.jpg" alt=""></div>
+  <div class="wave" id="wave5"></div>
+  <div class="hud t slug"><div><b>ALLCVZ</b> / TRANSMISSIONS / TX-07<br><i>VIDEO IS MADE OF LINES, NOT DOTS — SAME MACHINE, DIFFERENT RASTER</i></div><div style="text-align:right"><b>V-HOLD LOCKED</b> · 525 LINES · FIELD 2<br><span class="seg" style="font-size:22px">00:17:22</span></div></div>
+  <div class="hud b slug"><div><span class="key">SPACE</span>PLAY / HOLD <span class="key" style="margin-left:18px">←→</span>TUNE</div><div><span class="key">I</span>INDEX</div></div>
+  <svg class="reg tl" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg tr" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg bl" style="color:var(--ink-b)"><use href="#reg"/></svg><svg class="reg br" style="color:var(--ink-b)"><use href="#reg"/></svg>
+</section>
+
+<!-- F6 · INDEX — THE JOB TICKET -->
+<section class="frame" id="f6">
+  <div class="ticket">
+    <svg class="reg tl"><use href="#reg"/></svg><svg class="reg tr"><use href="#reg"/></svg><svg class="reg bl"><use href="#reg"/></svg><svg class="reg br"><use href="#reg"/></svg>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end"><div class="plate-type">Job ticket</div><div class="slug" style="text-align:right; color:#111">ALLCVZ · EVERYTHING IN THE MACHINE, AS A PLAIN LIST<br>NO MOTION · NO GLASS · EVERY LINE IS A LINK</div></div>
+    <div class="cols">
+      <div><h3>Pulls — 24</h3><table><tr><td>P-01</td><td>Some Shade of Pink — Ken Sable</td></tr><tr><td>P-02</td><td>Dorsia Nº11 — July 4th</td></tr><tr><td>P-03</td><td>Dorsia — Peacock</td></tr><tr><td>P-04</td><td>N.D.S — Nashville Dance Show</td></tr><tr><td>P-05</td><td>Deep Tropics Radio — Lake Sessions</td></tr><tr><td>…</td><td>19 more</td></tr></table></div>
+      <div><h3>Blanks — 12</h3><table><tr><td>B-01</td><td>Dorsia 10 — Jersey</td></tr><tr><td>B-02</td><td>Religious Holidays — Tee</td></tr><tr><td>B-03</td><td>Dorsia — Socks</td></tr><tr><td>…</td><td>9 more</td></tr></table><h3>Operator</h3><table><tr><td>OP</td><td>Cole Anderson — who runs this thing</td></tr></table></div>
+      <div><h3>Transmissions — 17</h3><table><tr><td>TX-01</td><td>Synthetic Luv — Ken Sable</td></tr><tr><td>TX-02</td><td>KEN — Alignment chart</td></tr><tr><td>TX-03</td><td>Dorsia Nº2 — Dining · Dancing</td></tr><tr><td>…</td><td>14 more</td></tr></table><h3>Line in</h3><table><tr><td>IN</td><td>Book CVZ · cole.anderson4444@gmail.com · @__c_v_z__</td></tr></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- F7 · MOBILE -->
+<div class="mobiles">
+  <section class="frame m glass" id="f7a"><div class="field" id="field7"></div><div class="scrim"></div>
+    <div class="slug" style="position:absolute; left:20px; top:22px; right:20px; display:flex; justify-content:space-between; z-index:40; font-size:10px"><div><b>ALLCVZ</b> / FIELD</div><div class="seg" style="font-size:16px">118.0</div></div>
+    <div class="slug" style="position:absolute; left:20px; right:20px; bottom:22px; z-index:40; font-size:10px; display:flex; justify-content:space-between"><div><b>OUT OF REGISTER</b><br><i>TAP TO LOCK · TILT TO SHIFT</i></div><div><span class="key">INDEX</span></div></div></section>
+  <section class="frame m glass" id="f7b" style="--ink-a:#dc0303; --ink-b:#ffeaad">
+    <img src="assets/nds_full.jpg" style="z-index:60; position:absolute; left:20px; top:96px; width:350px; height:350px; box-shadow: 0 0 0 1px var(--ink-a), 0 0 60px rgba(220,3,3,.4)" alt="">
+    <div class="slug" style="position:absolute; left:20px; top:22px; right:20px; display:flex; justify-content:space-between; z-index:40; font-size:10px"><div><b>PULL 04 / 24</b></div><div><b>LOCKED</b></div></div>
+    <div style="position:absolute; left:20px; right:20px; top:470px"><div class="plate-type" style="font-size:84px; color:var(--ink-a)">N.D.S</div><div class="slug" style="font-size:10px; margin-top:12px">NASHVILLE DANCE SHOW · POSTER · 2 COLOUR<br><i>SWIPE ← → NEXT PULL · SWIPE ↓ BACK TO THE FIELD</i></div>
+      <div class="bars" style="margin-top:16px"><span style="background:#dc0303; width:60px; height:22px"></span><span style="background:#ffeaad; width:60px; height:22px"></span></div></div>
+    <div class="slug" style="position:absolute; left:20px; right:20px; bottom:22px; z-index:40; font-size:10px; display:flex; justify-content:space-between"><div><i>ALLCVZ.COM/PULL/NDS</i></div><div><span class="key">INDEX</span></div></div></section>
+</div>
+
+<script>
+  // seeded PRNG so the frames render identically every time
+  const rng = (s) => () => ((s = Math.imul(s ^ (s >>> 15), 2246822507) ^ Math.imul(s ^ (s >>> 13), 3266489909), (s ^= s >>> 16) >>> 0) / 4294967296);
+  const ART = [["dorsia11",675,"#e60200","#eee400"],["nds",900,"#dc0303","#ffeaad"],["tiger",675,"#db090a","#dddcda"],["nashville",675,"#fc8c00","#a56300"],["nothought",900,"#ff5db5","#e48cbc"],
+               ["easter",675,"#942020","#f1eeec"],["blueroom",1357,"#2b4dff","#9db4ff"],["lovesongs",900,"#ff4fa0","#5a54ff"],["kensable",1260,"#ff5d7a","#e9e4d4"],
+               ["marquee",506,"#d9d4c7","#7d7a72"],["jersey",900,"#ff5a1f","#e9e4d4"],["relig",675,"#e60200","#e9e4d4"]];
+  const PLATES = { dorsia11: 4, nds: 3, tiger: 3, nashville: 3, nothought: 3, easter: 4 };
+  function buildField(el, seed, n, W, H, mono, tall) {
+    const floor = tall ? .55 : .22;
+    const r = rng(seed), items = [];
+    for (let i = 0; i < n; i++) {
+      const a = ART[i % ART.length], t = i / (n - 1), z = -3000 + t * 3150, th = i * 2.39996 + r() * .4, R = (540 + r() * 240) * (t > .78 ? 1.3 : 1);
+      const x = Math.cos(th) * R * (tall ? .5 : 1.6), y = Math.sin(th) * R * (tall ? 1.35 : .8), h = 380, w = h * a[1] / 900;
+      items.push({ a, z, h, w, x, y, ry: -Math.cos(th) * 30, rx: Math.sin(th) * 8, off: 5 + r() * 13, ang: r() * 6.28, near: t });
+    }
+    for (const it of items) {
+      const d = document.createElement("div"); d.className = "sheet";
+      d.style.cssText = `width:${it.w}px;height:${it.h}px;margin:${-it.h / 2}px 0 0 ${-it.w / 2}px;transform:translate3d(${it.x}px,${it.y}px,${it.z}px) rotateY(${it.ry}deg) rotateX(${it.rx}deg);opacity:${Math.min(1, floor + it.near * it.near * 1.0)};--c:${mono || it.a[2]};--c2:${mono || it.a[3]};--ox:${Math.cos(it.ang) * it.off}px;--oy:${Math.sin(it.ang) * it.off}px`;
+      const np = PLATES[it.a[0]];
+      if (np && it.near > .45 && !mono) {
+        for (let k = 0; k < np; k++) d.innerHTML += `<img class="pl" src="assets/${it.a[0]}_plate${k}.png" style="transform:translate(${Math.cos(it.ang + k * 2.1) * it.off * k * .9}px,${Math.sin(it.ang + k * 2.1) * it.off * k * .9}px)" alt="">`;
+      } else {
+        const m = `url(assets/${it.a[0]}_htc.png)`;
+        d.innerHTML = `<div class="ht" style="-webkit-mask-image:${m};mask-image:${m}"></div><div class="ht b" style="-webkit-mask-image:${m};mask-image:${m}"></div>`;
+      }
+      d.innerHTML += `<svg class="mk" style="left:-24px;top:-24px"><use href="#reg"/></svg><svg class="mk" style="right:-24px;bottom:-24px"><use href="#reg"/></svg>`;
+      el.appendChild(d);
+    }
+  }
+  buildField(document.getElementById("field3"), 7, 30, 1600, 900);
+  buildField(document.getElementById("field4"), 11, 30, 1600, 900);
+  buildField(document.getElementById("field5"), 23, 30, 1600, 900, "#2b4dff");
+  buildField(document.getElementById("field7"), 5, 11, 500, 1100, null, true);
+  buildField(document.getElementById("field2b"), 7, 30, 1600, 900);
+  const w = document.getElementById("wave5"), r5 = rng(99);
+  for (let i = 0; i < 180; i++) { const s = document.createElement("span"); s.style.height = (8 + Math.abs(Math.sin(i / 7)) * 60 * r5() + 6) + "%"; if (i === 61) { s.className = "p"; s.style.height = "100%"; } else if (i > 61) s.style.opacity = .3; w.appendChild(s); }
+</script>
+</body>
+</html>

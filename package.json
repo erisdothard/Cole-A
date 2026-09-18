@@ -1,0 +1,19 @@
+{
+  "name": "cvz-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "CVZ \u2014 interactive portfolio. Not a portfolio; a machine that contains a creative world.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc --noEmit",
+    "shoot": "node scripts/shoot.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

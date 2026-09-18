@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-fx="full">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>CVZ-TV</title>
+<meta name="description" content="CVZ — Cole Anderson. Visual design, brand enhancement, video, merch. Nashville. Turn the set on." />
+<meta name="theme-color" content="#050505" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Anton&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- THE SET. A television in a dark room. The only words on screen are the ones printed on the set. -->
+  <div id="room" class="room">
+    <div id="set" class="set">
+      <div class="cabinet">
+        <div class="bezel"><div id="glass" class="glass"><div id="tube-off" class="tube-off"></div></div></div>
+        <div class="panel">
+          <div class="brand"><span class="brand__name">CVZ</span><span class="brand__line">SOLID STATE · COLOR · MADE IN NASHVILLE</span></div>
+          <div class="dial" id="dial" aria-hidden="true"><div class="dial__knob"></div></div>
+          <div class="knobs" aria-hidden="true"><span class="knob"><i>VOL</i></span><span class="knob"><i>BRIGHT</i></span><span class="knob"><i>V-HOLD</i></span></div>
+          <button id="power" class="power" type="button" aria-label="Power up"><span class="power__led" id="led"></span><span class="power__cap">POWER</span></button>
+        </div>
+      </div>
+      <div class="foot"></div>
+    </div>
+  </div>
+
+  <!-- INSIDE THE TUBE. Everything after POWER lives here. -->
+  <main id="tube" class="tube" hidden>
+    <div class="tube__inner">
+      <video id="feed" class="feed" muted playsinline loop preload="auto"></video>
+      <div class="feed-fx" aria-hidden="true"><div class="tracking"></div><div class="tracking tracking--2"></div></div>
+      <div id="objects" class="objects"></div>
+      <div id="spam" class="spam" aria-live="polite"></div>
+
+      <div class="osd osd--tl" id="osd-tl"><span id="osd-mode">PLAY ▶</span> <span id="osd-tc">SP 0:00:00</span></div>
+      <div class="osd osd--tr" id="osd-ch"><span id="osd-num">CH 1</span><span id="osd-name">CVZ</span></div>
+      <div class="osd osd--br" id="osd-help">MENU · ▲▼ CH · ESC</div>
+      <div class="osd osd--bl" id="osd-hover" hidden>▶ SELECT</div>
+
+      <section id="lock" class="lock" hidden>
+        <div class="lock__media" id="lock-media"></div>
+        <div class="chyron" id="chyron"><div class="chyron__bar"><b id="lk-title"></b><span id="lk-note"></span></div><div class="chyron__meta"><span id="lk-count"></span><span>◀ ▶ NEXT · ESC BACK</span></div></div>
+        <div class="osd osd--tl">PAUSE ‖ <span id="lk-tc"></span></div>
+      </section>
+
+      <section id="menu" class="menu" hidden aria-label="Index">
+        <div class="menu__head"><span>CVZ-TV · MENU</span><span>EVERYTHING ON THE SET · ESC TO CLOSE</span></div>
+        <div class="menu__cols" id="menu-cols"></div>
+      </section>
+
+      <div id="static" class="static" aria-hidden="true"><canvas id="snow"></canvas></div>
+    </div>
+    <div class="tube__glass" aria-hidden="true"></div>
+    <button id="menu-btn" class="menu-btn" type="button">MENU</button>
+    <button id="mute-btn" class="mute-btn" type="button" aria-pressed="false">SOUND ON</button>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

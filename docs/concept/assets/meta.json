@@ -1,0 +1,173 @@
+{
+ "dorsia11": {
+  "w": 675,
+  "h": 900,
+  "plates": [
+   {
+    "file": "dorsia11_plate0.png",
+    "hex": "#eee400",
+    "share": 0.281
+   },
+   {
+    "file": "dorsia11_plate1.png",
+    "hex": "#dacd00",
+    "share": 0.211
+   },
+   {
+    "file": "dorsia11_plate2.png",
+    "hex": "#e60200",
+    "share": 0.34
+   },
+   {
+    "file": "dorsia11_plate3.png",
+    "hex": "#190300",
+    "share": 0.168
+   }
+  ]
+ },
+ "nds": {
+  "w": 900,
+  "h": 900,
+  "plates": [
+   {
+    "file": "nds_plate0.png",
+    "hex": "#ffeaad",
+    "share": 0.565
+   },
+   {
+    "file": "nds_plate1.png",
+    "hex": "#f37e5c",
+    "share": 0.043
+   },
+   {
+    "file": "nds_plate2.png",
+    "hex": "#dc0303",
+    "share": 0.392
+   }
+  ]
+ },
+ "tiger": {
+  "w": 675,
+  "h": 900,
+  "plates": [
+   {
+    "file": "tiger_plate0.png",
+    "hex": "#dddcda",
+    "share": 0.426
+   },
+   {
+    "file": "tiger_plate1.png",
+    "hex": "#d07d7c",
+    "share": 0.082
+   },
+   {
+    "file": "tiger_plate2.png",
+    "hex": "#db090a",
+    "share": 0.491
+   }
+  ]
+ },
+ "nashville": {
+  "w": 675,
+  "h": 900,
+  "plates": [
+   {
+    "file": "nashville_plate0.png",
+    "hex": "#fc8c00",
+    "share": 0.539
+   },
+   {
+    "file": "nashville_plate1.png",
+    "hex": "#a56300",
+    "share": 0.074
+   },
+   {
+    "file": "nashville_plate2.png",
+    "hex": "#483300",
+    "share": 0.387
+   }
+  ]
+ },
+ "nothought": {
+  "w": 900,
+  "h": 900,
+  "plates": [
+   {
+    "file": "nothought_plate0.png",
+    "hex": "#e48cbc",
+    "share": 0.008
+   },
+   {
+    "file": "nothought_plate1.png",
+    "hex": "#ff5db5",
+    "share": 0.766
+   },
+   {
+    "file": "nothought_plate2.png",
+    "hex": "#020102",
+    "share": 0.226
+   }
+  ]
+ },
+ "easter": {
+  "w": 675,
+  "h": 900,
+  "plates": [
+   {
+    "file": "easter_plate0.png",
+    "hex": "#f1eeec",
+    "share": 0.533
+   },
+   {
+    "file": "easter_plate1.png",
+    "hex": "#ede9e6",
+    "share": 0.297
+   },
+   {
+    "file": "easter_plate2.png",
+    "hex": "#a88584",
+    "share": 0.006
+   },
+   {
+    "file": "easter_plate3.png",
+    "hex": "#942020",
+    "share": 0.164
+   }
+  ]
+ },
+ "blueroom": {
+  "w": 1357,
+  "h": 900,
+  "plates": []
+ },
+ "lovesongs": {
+  "w": 900,
+  "h": 900,
+  "plates": []
+ },
+ "kensable": {
+  "w": 1260,
+  "h": 900,
+  "plates": []
+ },
+ "kenchart": {
+  "w": 1200,
+  "h": 900,
+  "plates": []
+ },
+ "marquee": {
+  "w": 506,
+  "h": 900,
+  "plates": []
+ },
+ "jersey": {
+  "w": 900,
+  "h": 900,
+  "plates": []
+ },
+ "relig": {
+  "w": 675,
+  "h": 900,
+  "plates": []
+ }
+}
