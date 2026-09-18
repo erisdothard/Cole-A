@@ -18,6 +18,7 @@ export class Broadcast {
   private objs: Obj[] = []
   private ch = 1
   private locked: Item | null = null
+  private cursor: Item | null = null // last thing tuned in to; NEXT / PREV pick up from here
   private t0 = performance.now()
   private last = this.t0
   private feedTimer = 0
@@ -114,7 +115,7 @@ export class Broadcast {
   /* ---------------- lock (tune in to one thing) ---------------- */
   lock(id: string) {
     const item = ITEMS.find((i) => i.id === id); if (!item) return
-    this.locked = item
+    this.locked = item; this.cursor = item
     this.burst(220); sfx.static(220)
     const m = $('#lock-media'); m.innerHTML = item.video ? `<video src="${item.video}" poster="${item.poster ?? ''}" playsinline loop></video>` : `<img src="${item.image}" alt="${item.title}">`
     // A video in focus is the one thing on the set you actually hear: the static ducks, its own sound comes up at the TV volume.
@@ -130,14 +131,19 @@ export class Broadcast {
     $('#osd-mode').textContent = 'PAUSE ‖'
     history.replaceState(null, '', `#item/${item.id}`)
   }
-  private lockList() { const c = CHANNELS.find((x) => x.n === this.ch)!; const l = ITEMS.filter(c.filter); return l.includes(this.locked!) ? l : ITEMS }
+  private lockList() { const l = ITEMS.filter(CHANNELS.find((x) => x.n === this.ch)!.filter); return !this.locked || l.includes(this.locked) ? l : ITEMS }
   unlock() {
     if (!this.locked) return
     this.locked = null; $('#lock').hidden = true; $('#lock-media').innerHTML = ''; this.tube.classList.remove('locked')
     sfx.detach(); sfx.duck(false)
     $('#osd-mode').textContent = 'PLAY ▶'; this.burst(140); sfx.click(); history.replaceState(null, '', `#ch/${this.ch}`)
   }
-  step(d: number) { if (!this.locked) return; const l = this.lockList(); const i = (l.indexOf(this.locked) + d + l.length) % l.length; this.lock(l[i].id) }
+  /** NEXT / PREV. Works from the broadcast too: picks up where you last were on this channel, or from its first piece. */
+  step(d: number) {
+    const l = this.lockList(), cur = this.locked ?? this.cursor
+    const i = cur && l.includes(cur) ? l.indexOf(cur) : d > 0 ? -1 : 0
+    this.lock(l[(i + d + l.length) % l.length].id)
+  }
 
   /* ---------------- menu (the index) ---------------- */
   menu(on: boolean) {
@@ -202,10 +208,11 @@ export class Broadcast {
     addEventListener('wheel', (e) => { if (this.locked || !$('#menu').hidden) return; wheel += e.deltaY; if (Math.abs(wheel) > 260) { this.tune(wheel > 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1); wheel = 0 } }, { passive: true })
     let sx = 0, sy = 0
     addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY }, { passive: true })
-    addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) { if (this.locked) this.unlock(); else this.tune(dy < 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1) } else if (Math.abs(dx) > 70 && this.locked) this.step(dx < 0 ? 1 : -1) }, { passive: true })
+    addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) { if (this.locked) this.unlock(); else this.tune(dy < 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1) } else if (Math.abs(dx) > 70) this.step(dx < 0 ? 1 : -1) }, { passive: true })
     $('#lock').addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('.chyron, video')) this.unlock() })
     $('#menu').addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); const h = (e.target as HTMLElement).closest('h3'); if (li) { this.menu(false); this.lock(li.dataset.id!) } else if (h?.dataset.ch) { this.menu(false); this.tune(Number(h.dataset.ch)) } })
     $('#menu-btn').addEventListener('click', () => this.menu($('#menu').hidden))
+    $('#next-btn').addEventListener('click', () => { this.menu(false); this.step(1) }); $('#prev-btn').addEventListener('click', () => { this.menu(false); this.step(-1) })
     $('#vol-up').addEventListener('click', () => this.volume(1)); $('#vol-dn').addEventListener('click', () => this.volume(-1))
     $('#mute-btn').addEventListener('click', () => { sfx.toggleMute(); this.showVolume() })
     addEventListener('hashchange', () => { const id = this.itemFromHash(); const c = this.chFromHash(); if (id) this.lock(id); else if (c && c !== this.ch) this.tune(c) })

@@ -102,9 +102,13 @@ html[data-fx="off"] .tracking { display: none; }
 .static { position: absolute; inset: 0; z-index: 38; opacity: 0; pointer-events: none; transition: opacity .05s; }
 .static.on { opacity: .85; } .static canvas { width: 100%; height: 100%; image-rendering: pixelated; }
 
-.menu-btn, .ctl { border: 2px solid #fff; background: rgba(0,0,0,.6); color: #fff; font-family: var(--osd); font-size: 20px; letter-spacing: .12em; padding: 4px 14px; cursor: pointer; }
-.menu-btn { position: absolute; z-index: 45; bottom: 3.5vh; left: 50%; transform: translateX(-50%); }
+.nav-btn, .ctl { border: 2px solid #fff; background: rgba(0,0,0,.6); color: #fff; font-family: var(--osd); font-size: 20px; letter-spacing: .12em; padding: 4px 14px; cursor: pointer; }
+.nav { position: absolute; z-index: 45; bottom: 3.5vh; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.nav-btn { white-space: nowrap; }
+.nav-btn:active { transform: translateY(2px); }
 .volctl { position: absolute; z-index: 45; left: 4vw; top: calc(3.5vh + 44px); display: flex; gap: 6px; opacity: .8; }
 .ctl { font-size: 16px; padding: 3px 10px; } .ctl[aria-pressed="true"] { color: #ff3b30; border-color: #ff3b30; }
-.menu-btn:hover, .ctl:hover { background: #fff; color: #000; }
-@media (max-width: 800px) { .volctl { top: calc(3.5vh + 36px); } .osd--vol { top: calc(3.5vh + 74px); font-size: 20px; } .vbar i { width: 10px; height: 18px; } .menu__head { flex-direction: column; gap: 4px; font-size: 20px; } .tube.locked .menu-btn { display: none; } .chyron__meta { flex-direction: column; gap: 2px; } }
+.nav-btn:hover, .ctl:hover { background: #fff; color: #000; }
+/* Narrow screens: lift the chyron clear of the NEXT / MENU / PREV bar and keep the picture above it. */
+@media (max-width: 1000px) { .tube.locked .chyron { bottom: calc(3.5vh + 48px); } .lock { padding-bottom: 14vh; } .lock__media, .lock__media img, .lock__media video { max-height: 56vh; } }
+@media (max-width: 800px) { .nav { gap: 6px; } .nav-btn { font-size: 17px; padding: 3px 10px; letter-spacing: .08em; } .osd--bl { bottom: calc(3.5vh + 50px); } .tube.locked .chyron__meta span + span { display: none; } .volctl { top: calc(3.5vh + 36px); } .osd--vol { top: calc(3.5vh + 74px); font-size: 20px; } .vbar i { width: 10px; height: 18px; } .menu__head { flex-direction: column; gap: 4px; font-size: 20px; } .chyron__meta { flex-direction: column; gap: 2px; } }
