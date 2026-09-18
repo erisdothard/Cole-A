@@ -12,7 +12,9 @@ const VOL_MAX = 10
 const VOL_DEFAULT = 8
 
 let ctx: AudioContext | null = null
-let master: GainNode | null = null
+let master: GainNode | null = null // every synth source lands here; ducks under a playing video
+let out: GainNode | null = null    // the volume knob
+let media: HTMLMediaElement | null = null // the video in focus, if any
 let noiseBuf: AudioBuffer | null = null
 let bed: AudioBufferSourceNode | null = null
 let muted = false
@@ -32,9 +34,11 @@ function writeLevel(v: number) { try { localStorage.setItem(VOL_KEY, String(v)) 
 const gainFor = (v: number) => (v <= 0 ? 0 : Math.pow(v / VOL_MAX, 1.5))
 
 function applyMaster() {
-  if (!ctx || !master) return
-  master.gain.cancelScheduledValues(ctx.currentTime)
-  master.gain.setTargetAtTime(muted ? 0 : gainFor(level), ctx.currentTime, 0.02)
+  if (ctx && out) {
+    out.gain.cancelScheduledValues(ctx.currentTime)
+    out.gain.setTargetAtTime(muted ? 0 : gainFor(level), ctx.currentTime, 0.02)
+  }
+  if (media) { media.muted = muted; media.volume = gainFor(level) }
 }
 
 function wake() { if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {}) }
@@ -46,8 +50,9 @@ function ensure() {
   // static burst from clipping at VOL 10.
   const lim = ctx.createDynamicsCompressor()
   lim.threshold.value = -6; lim.knee.value = 4; lim.ratio.value = 12; lim.attack.value = 0.002; lim.release.value = 0.12
-  master = ctx.createGain(); master.gain.value = muted ? 0 : gainFor(level)
-  master.connect(lim).connect(ctx.destination)
+  out = ctx.createGain(); out.gain.value = muted ? 0 : gainFor(level)
+  master = ctx.createGain(); master.gain.value = 1
+  master.connect(out).connect(lim).connect(ctx.destination)
   const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0)
   for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1
   noiseBuf = buf
@@ -105,6 +110,16 @@ export const sfx = {
     const o = c.createOscillator(); o.type = 'square'; o.frequency.value = 880
     const g = c.createGain(); g.gain.setValueAtTime(0.06, c.currentTime); g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08)
     o.connect(g).connect(master); o.start(); o.stop(c.currentTime + 0.1)
+  },
+  /* ---- a video in focus ---- */
+  /** Hand the set a video: it plays at the TV volume and follows VOL / MUTE from here on. */
+  attach(el: HTMLMediaElement) { media = el; applyMaster() },
+  detach() { media = null },
+  /** Pull the static and hum down under a playing video, and back up when it goes. */
+  duck(on: boolean) {
+    if (!ctx || !master) return
+    master.gain.cancelScheduledValues(ctx.currentTime)
+    master.gain.setTargetAtTime(on ? 0.08 : 1, ctx.currentTime, on ? 0.35 : 0.6)
   },
   /* ---- volume ---- */
   max: VOL_MAX,

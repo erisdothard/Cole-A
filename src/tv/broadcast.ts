@@ -116,7 +116,11 @@ export class Broadcast {
     const item = ITEMS.find((i) => i.id === id); if (!item) return
     this.locked = item
     this.burst(220); sfx.static(220)
-    const m = $('#lock-media'); m.innerHTML = item.video ? `<video src="${item.video}" poster="${item.poster ?? ''}" muted playsinline loop autoplay></video>` : `<img src="${item.image}" alt="${item.title}">`
+    const m = $('#lock-media'); m.innerHTML = item.video ? `<video src="${item.video}" poster="${item.poster ?? ''}" playsinline loop></video>` : `<img src="${item.image}" alt="${item.title}">`
+    // A video in focus is the one thing on the set you actually hear: the static ducks, its own sound comes up at the TV volume.
+    const v = m.querySelector('video')
+    if (v) { sfx.attach(v); v.play().catch(() => { v.muted = true; v.play().catch(() => {}) }) } else sfx.detach()
+    sfx.duck(!!v)
     $('#lk-title').textContent = item.title.toUpperCase(); $('#lk-note').textContent = item.note.toUpperCase()
     const list = this.lockList(), idx = list.indexOf(item)
     $('#lk-count').textContent = `${String(idx + 1).padStart(2, '0')} / ${list.length} · CH ${this.ch} ${CHANNELS.find((c) => c.n === this.ch)!.name}`
@@ -129,6 +133,7 @@ export class Broadcast {
   unlock() {
     if (!this.locked) return
     this.locked = null; $('#lock').hidden = true; $('#lock-media').innerHTML = ''; this.tube.classList.remove('locked')
+    sfx.detach(); sfx.duck(false)
     $('#osd-mode').textContent = 'PLAY ▶'; this.burst(140); sfx.click(); history.replaceState(null, '', `#ch/${this.ch}`)
   }
   step(d: number) { if (!this.locked) return; const l = this.lockList(); const i = (l.indexOf(this.locked) + d + l.length) % l.length; this.lock(l[i].id) }
