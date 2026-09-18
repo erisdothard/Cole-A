@@ -1,23 +1,58 @@
-/* Stage 1: the set in the room. You press POWER on a television, the tube
-   warms up, and the camera pushes into the glass until you are inside it. */
+/* Stage 1: the set in the room. A photographed 1978 console with the
+   controls live on top of it: turn the channel dial, VOL, BRIGHT and
+   V-HOLD, then press POWER. The tube warms up and the camera pushes into
+   the glass until you are inside it. On a phone the knobs are too small to
+   grab, so a remote under the set drives the same controls. */
 
 import { sfx } from './audio'
+import { Knob, applyBright, readBright, setVHold } from './knobs'
+import { CHANNELS } from '../content/content'
+import { CABINETS, applyCabinet, readCabinet, writeCabinet } from './cabinets'
 
+const $ = <T extends HTMLElement>(s: string) => document.querySelector(s) as T
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export function armSet(onInside: () => Promise<void> | void): void {
-  const power = document.getElementById('power') as HTMLButtonElement
-  const led = document.getElementById('led') as HTMLElement
-  const set = document.getElementById('set') as HTMLElement
-  const room = document.getElementById('room') as HTMLElement
-  const glass = document.getElementById('glass') as HTMLElement
-  const off = document.getElementById('tube-off') as HTMLElement
+  const power = $<HTMLButtonElement>('#power')
+  const led = $('#led'), set = $('#set'), room = $('#room'), glass = $('#glass'), off = $('#tube-off')
   let fired = false
 
+  /* ---- which set ---- */
+  let cab = readCabinet()
+  const showCab = () => { applyCabinet(set, CABINETS[cab]); $('#switch-name').textContent = CABINETS[cab].name; $('#switch-n').textContent = `${cab + 1} / ${CABINETS.length}` }
+  showCab()
+  $('#switch-set').addEventListener('click', async () => {
+    if (fired) return
+    set.classList.add('swap'); sfx.click(); await wait(180)
+    cab = (cab + 1) % CABINETS.length; writeCabinet(cab); showCab()
+    await new Promise((r) => { const img = $<HTMLImageElement>('.set__photo'); if (img.complete) r(null); else img.addEventListener('load', () => r(null), { once: true }) })
+    set.classList.remove('swap')
+  })
+
+  /* ---- the controls ---- */
+  const chFromHash = () => { const m = location.hash.match(/^#ch\/(\d)/); const n = m ? Number(m[1]) : 1; return n >= 1 && n <= CHANNELS.length ? n : 1 }
+  const knobs = {
+    ch: new Knob($('#dial'), { label: 'Channel', min: 1, max: CHANNELS.length, value: chFromHash(), sweep: 300, onChange: (n) => {
+      if (!/^#item\//.test(location.hash)) history.replaceState(null, '', `#ch/${n}`)
+      $('#r-ch').textContent = String(n)
+    } }),
+    vol: new Knob($('#k-vol'), { label: 'Volume', min: 0, max: sfx.max, value: sfx.level(), onChange: (v) => { sfx.setVolume(v); $('#r-vol').textContent = String(v) } }),
+    bright: new Knob($('#k-bright'), { label: 'Brightness', min: 0, max: 10, value: readBright(), onChange: (v) => { applyBright(v); $('#r-bright').textContent = String(v) } }),
+    vhold: new Knob($('#k-vhold'), { label: 'Vertical hold', min: -5, max: 5, value: 0, onChange: (v) => {
+      setVHold(v); glass.classList.toggle('rolling', v !== 0); glass.classList.toggle('rolling--up', v < 0)
+      glass.style.setProperty('--roll-dur', `${(6 - Math.abs(v)) * 0.32}s`); $('#r-vhold').textContent = v > 0 ? `+${v}` : String(v)
+    } }),
+  }
+  applyBright(readBright())
+  $('#r-ch').textContent = String(knobs.ch.value); $('#r-vol').textContent = String(knobs.vol.value); $('#r-bright').textContent = String(knobs.bright.value)
+  for (const b of document.querySelectorAll<HTMLButtonElement>('.remote [data-k]')) b.addEventListener('click', () => knobs[b.dataset.k as keyof typeof knobs].step(Number(b.dataset.d)))
+  addEventListener('hashchange', () => { if (!fired) knobs.ch.set(chFromHash(), true) })
+
+  /* ---- POWER ---- */
   const go = async () => {
     if (fired) return
     fired = true
-    power.disabled = true
+    power.disabled = true; $<HTMLButtonElement>('#power-remote').disabled = true
     sfx.powerOn()
     led.classList.add('on')
     set.classList.add('on')
@@ -37,7 +72,8 @@ export function armSet(onInside: () => Promise<void> | void): void {
     const r = glass.getBoundingClientRect()
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2
     const scale = Math.max(innerWidth / r.width, innerHeight / r.height) * 1.12
-    set.style.transformOrigin = `${cx - set.getBoundingClientRect().left}px ${cy - set.getBoundingClientRect().top}px`
+    const s = set.getBoundingClientRect()
+    set.style.transformOrigin = `${cx - s.left}px ${cy - s.top}px`
     room.classList.add('push')
     set.style.transform = `translate(${innerWidth / 2 - cx}px, ${innerHeight / 2 - cy}px) scale(${scale})`
     await wait(1900)
@@ -50,5 +86,6 @@ export function armSet(onInside: () => Promise<void> | void): void {
   }
 
   power.addEventListener('click', go)
-  addEventListener('keydown', (e) => { if (e.key === 'Enter' && !fired) go() })
+  $('#power-remote').addEventListener('click', go)
+  addEventListener('keydown', (e) => { if (e.key === 'Enter' && !fired && !(e.target as HTMLElement).closest('[role=slider]')) go() })
 }

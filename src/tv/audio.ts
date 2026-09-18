@@ -126,6 +126,8 @@ export const sfx = {
   level() { return level },
   isMuted() { return muted },
   toggleMute(): boolean { muted = !muted; applyMaster(); return muted },
+  /** Set the volume outright (the VOL knob). Un-mutes. */
+  setVolume(v: number) { level = Math.max(0, Math.min(VOL_MAX, Math.round(v))); muted = false; writeLevel(level); applyMaster() },
   /** Step the volume; any step un-mutes, like a real remote. */
   volume(delta: number): number {
     level = Math.max(0, Math.min(VOL_MAX, level + delta)); muted = false

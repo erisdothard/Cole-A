@@ -10,19 +10,31 @@
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Anton&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- THE SET. A television in a dark room. The only words on screen are the ones printed on the set. -->
+  <!-- THE SET. A real television in a dark room. Photo cabinet; the glass, dial, knobs and POWER are live on top of it. -->
   <div id="room" class="room">
     <div id="set" class="set">
-      <div class="cabinet">
-        <div class="bezel"><div id="glass" class="glass"><div id="tube-off" class="tube-off"></div></div></div>
-        <div class="panel">
-          <div class="brand"><span class="brand__name">CVZ</span><span class="brand__line">SOLID STATE · COLOR · MADE IN NASHVILLE</span></div>
-          <div class="dial" id="dial" aria-hidden="true"><div class="dial__knob"></div></div>
-          <div class="knobs" aria-hidden="true"><span class="knob"><i>VOL</i></span><span class="knob"><i>BRIGHT</i></span><span class="knob"><i>V-HOLD</i></span></div>
-          <button id="power" class="power" type="button" aria-label="Power up"><span class="power__led" id="led"></span><span class="power__cap">POWER</span></button>
+      <img class="set__photo" src="/tv/cabinet-a.webp" width="1107" height="663" alt="" draggable="false" fetchpriority="high" decoding="async" />
+      <div id="glass" class="glass"><div id="tube-off" class="tube-off"></div></div>
+      <div class="plate"><span>CVZ</span></div>
+      <div id="dial" class="dial" aria-label="Channel">
+        <div class="dial__face">
+          <i class="dial__n" style="--a:-150deg"><b>1</b></i><i class="dial__n" style="--a:-100deg"><b>2</b></i><i class="dial__n" style="--a:-50deg"><b>3</b></i><i class="dial__n" style="--a:0deg"><b>4</b></i><i class="dial__n" style="--a:50deg"><b>5</b></i><i class="dial__n" style="--a:100deg"><b>6</b></i><i class="dial__n" style="--a:150deg"><b>7</b></i>
         </div>
+        <div class="dial__cap"></div>
       </div>
-      <div class="foot"></div>
+      <div id="k-bright" class="knob knob--1"><div class="knob__cap"></div></div>
+      <div id="k-vhold" class="knob knob--2"><div class="knob__cap"></div></div>
+      <div id="k-vol" class="knob knob--3"><div class="knob__cap"></div></div>
+      <div class="legend" aria-hidden="true"><span>BRIGHT</span><span>V-HOLD</span><span>VOL</span></div>
+      <button id="power" class="power" type="button" aria-label="Power up"><span class="power__led" id="led"></span><span class="power__cap">POWER</span></button>
+    </div>
+    <button id="switch-set" class="switch" type="button" aria-label="Switch to another television set"><span>SWITCH SET</span><b id="switch-name"></b><i id="switch-n"></i></button>
+    <div class="remote" id="remote" aria-label="Remote">
+      <div class="remote__row"><span>CH</span><button type="button" data-k="ch" data-d="-1">−</button><b id="r-ch">1</b><button type="button" data-k="ch" data-d="1">+</button></div>
+      <div class="remote__row"><span>VOL</span><button type="button" data-k="vol" data-d="-1">−</button><b id="r-vol"></b><button type="button" data-k="vol" data-d="1">+</button></div>
+      <div class="remote__row"><span>BRIGHT</span><button type="button" data-k="bright" data-d="-1">−</button><b id="r-bright"></b><button type="button" data-k="bright" data-d="1">+</button></div>
+      <div class="remote__row"><span>V-HOLD</span><button type="button" data-k="vhold" data-d="-1">−</button><b id="r-vhold">0</b><button type="button" data-k="vhold" data-d="1">+</button></div>
+      <button id="power-remote" class="remote__power" type="button">POWER</button>
     </div>
   </div>
 
@@ -52,6 +64,7 @@
       </section>
 
       <div id="static" class="static" aria-hidden="true"><canvas id="snow"></canvas></div>
+      <div class="tube__dim" aria-hidden="true"></div><div class="tube__wash" aria-hidden="true"></div>
     </div>
     <div class="tube__glass" aria-hidden="true"></div>
     <nav class="nav" aria-label="Browse">

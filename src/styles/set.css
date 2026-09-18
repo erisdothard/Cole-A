@@ -1,50 +1,86 @@
-/* The set in the room. Built in CSS, no images: a late-70s/80s colour
-   television — black plastic cabinet, curved glass, dial, knobs, POWER. */
+/* The set in the room. A photographed late-70s walnut console (public/tv/
+   cabinet-a.webp, 1107×663). Everything that moves — the glass, the channel
+   dial, the three pots, the legend strip, POWER — is laid over the photo at
+   percentages measured off it, so it scales with the picture. */
 
 :root {
   --osd: 'VT323', 'Courier New', monospace;
   --chy: 'Anton', Impact, sans-serif;
-  --room: #050505;
-  --plastic: #17171a;
-  --plastic-hi: #2a2a2f;
+  --room: #000;
   --legend: #cfc9b8;
+  --chrome: conic-gradient(from 20deg, #f4f4f4, #8c8c8c 18%, #ffffff 32%, #6a6a6a 50%, #f0f0f0 66%, #7a7a7a 84%, #f4f4f4);
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; background: var(--room); color: var(--legend); font-family: var(--osd); overflow: hidden; }
 button { font: inherit; }
 
-.room { position: fixed; inset: 0; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 60%, #121214 0%, #050505 60%); transition: opacity .6s; z-index: 100; }
-.room.push { transition: opacity .6s; }
+.room { position: fixed; inset: 0; display: grid; place-content: center; gap: 18px; background: radial-gradient(ellipse at 50% 70%, #101010 0%, #000 65%); transition: opacity .6s; z-index: 100; }
 .room.gone { opacity: 0; pointer-events: none; }
 
-.set { position: relative; width: min(92vw, 1180px); transition: transform 1.9s cubic-bezier(.55, 0, .9, .35); will-change: transform; }
-.cabinet { display: grid; grid-template-columns: 1fr 190px; gap: 22px; padding: 26px; border-radius: 22px; background: linear-gradient(180deg, var(--plastic-hi), var(--plastic) 30%, #0e0e10); box-shadow: inset 0 2px 0 #3a3a40, inset 0 -3px 0 #000, 0 40px 80px #000, 0 0 0 1px #000; }
-@media (max-width: 800px) { .cabinet { grid-template-columns: 1fr; } }
-.bezel { padding: 18px; border-radius: 18px; background: linear-gradient(180deg, #0c0c0e, #050506); box-shadow: inset 0 0 0 1px #2b2b30, inset 0 0 40px #000; }
-.glass { position: relative; aspect-ratio: 4 / 3; border-radius: 9% / 12%; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #1a1c1f 0%, #0b0c0e 60%, #050506 100%); box-shadow: inset 0 0 90px #000, inset 0 0 0 2px #000; }
-.glass::before { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.07) 0%, transparent 35%, transparent 70%, rgba(255,255,255,.03) 100%); pointer-events: none; }
+.set { position: relative; width: min(94vw, 1180px); aspect-ratio: var(--w, 1107) / var(--h, 663); transition: transform 1.9s cubic-bezier(.55, 0, .9, .35); will-change: transform; user-select: none; -webkit-user-select: none; }
+.set__photo { display: block; width: 100%; height: 100%; pointer-events: none; filter: drop-shadow(0 40px 60px #000); transition: opacity .18s; }
+.set.swap .set__photo, .set.swap > :not(.set__photo) { opacity: 0; }
+.set > * { transition: opacity .18s; }
+
+/* The glass. Transparent until the tube wakes, so the photo's own dead screen shows through. */
+.glass { position: absolute; left: var(--glass-l); top: var(--glass-t); width: var(--glass-w); height: var(--glass-h); border-radius: var(--glass-r); overflow: hidden; filter: brightness(var(--bright, 1)); }
 .tube-off { position: absolute; inset: 0; background: #000; opacity: 0; }
 .tube-off.line { opacity: 1; background: linear-gradient(#000 0 calc(50% - 1px), #fff calc(50% - 1px) calc(50% + 1px), #000 calc(50% + 1px)); box-shadow: 0 0 40px #fff; transition: none; }
 .tube-off.open { animation: open .5s cubic-bezier(.2, .8, .2, 1) forwards; }
 @keyframes open { from { clip-path: inset(49.5% 0 49.5% 0); background: #fff; } to { clip-path: inset(0 0 0 0); background: #dfe6ff; } }
 .glass.snow .tube-off { background: repeating-radial-gradient(circle at 30% 40%, #fff 0 1px, #000 1px 3px), repeating-linear-gradient(90deg, #aaa 0 1px, #222 1px 2px); background-blend-mode: difference; animation: snow .08s steps(2) infinite; opacity: 1; }
 @keyframes snow { to { background-position: 7px 13px, 3px 0; } }
+/* V-HOLD off centre while the snow is on: the raster rolls. */
+.glass.rolling.snow .tube-off { animation: snow .08s steps(2) infinite, vroll-glass var(--roll-dur, 1.2s) linear infinite; }
+.glass.rolling--up.snow .tube-off { animation-direction: normal, reverse; }
+@keyframes vroll-glass { from { transform: translateY(0); } to { transform: translateY(-16%); } }
 
-.panel { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; gap: 16px; padding: 6px 4px; }
-@media (max-width: 800px) { .panel { flex-direction: row; flex-wrap: wrap; align-items: center; } .knobs { display: none !important; } }
-.brand { display: flex; flex-direction: column; gap: 4px; }
-.brand__name { font-family: var(--chy); font-size: 34px; letter-spacing: .08em; color: #e8e2d0; text-shadow: 0 1px 0 #000, 0 -1px 0 #444; }
-.brand__line { font-size: 13px; letter-spacing: .12em; color: #7c776a; }
-.dial { position: relative; width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; background: conic-gradient(from 0deg, #2a2a2f, #0f0f11 20%, #2a2a2f 40%, #0f0f11 60%, #2a2a2f 80%, #0f0f11); box-shadow: inset 0 0 0 4px #000, 0 6px 14px #000, 0 0 0 1px #333; }
-.dial::before { content: "2 3 4 5 6 7 8 9 10 11 12 13"; position: absolute; inset: -22px; font-size: 12px; color: #7c776a; letter-spacing: .5em; text-align: center; line-height: 164px; white-space: nowrap; overflow: hidden; border-radius: 50%; }
-.dial__knob { position: absolute; inset: 26px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #3a3a40, #101012 70%); box-shadow: 0 4px 10px #000; }
-.dial__knob::after { content: ""; position: absolute; left: 50%; top: 4px; width: 3px; height: 22px; margin-left: -1.5px; background: #e8e2d0; }
-.knobs { display: flex; justify-content: space-around; }
-.knob { position: relative; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #35353b, #0f0f11 70%); box-shadow: 0 3px 8px #000; }
-.knob i { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; letter-spacing: .1em; color: #7c776a; }
-.power { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; height: 62px; border: 0; border-radius: 6px; cursor: pointer; color: #e8e2d0; letter-spacing: .3em; font-size: 20px; background: linear-gradient(180deg, #34343a, #1b1b1f); box-shadow: 0 5px 0 #000, 0 8px 18px #000, inset 0 1px 0 #55555c; transition: transform .08s, box-shadow .08s; }
-.power:hover { background: linear-gradient(180deg, #3c3c43, #202025); }
-.power:active, .set.on .power { transform: translateY(4px); box-shadow: 0 1px 0 #000, 0 3px 8px #000, inset 0 1px 0 #55555c; }
-.power__led { width: 10px; height: 10px; border-radius: 50%; background: #3a0d0d; box-shadow: inset 0 0 2px #000; }
+/* Brand plate, top of the panel. */
+.plate { position: absolute; left: var(--plate-l); top: var(--plate-t); width: var(--plate-w); height: var(--plate-h); display: grid; place-items: center; font-family: var(--chy); font-size: clamp(9px, 1.5vw, 19px); letter-spacing: .14em; color: #e9e3d1; text-shadow: 0 0 6px rgba(233,227,209,.35); pointer-events: none; }
+
+/* Knobs share a chrome collar and a black cap that turns. --turn comes from knobs.ts. */
+.dial, .knob { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; cursor: grab; touch-action: none; outline: none; }
+.dial:focus-visible, .knob:focus-visible { box-shadow: 0 0 0 3px #3bff6b; }
+.dial.turning, .knob.turning { cursor: grabbing; }
+.dial { left: var(--dial-x); top: var(--dial-y); width: var(--dial-d); aspect-ratio: 1; background: var(--chrome); box-shadow: 0 6px 16px #000, 0 0 0 1px #000; }
+.dial__face { position: absolute; inset: 4%; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #1d1d20, #050506 72%); box-shadow: inset 0 0 0 1px #000, inset 0 0 18px #000; }
+/* Numbers ride a ring at 36% of the dial's radius from the rim, so they clear the cap on every size of dial. */
+.dial__n { position: absolute; inset: 0; padding-top: 9%; text-align: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: clamp(8px, 1.15vw, 16px); color: #e9e3d1; transform: rotate(var(--a)); pointer-events: none; }
+.dial__n b { display: inline-block; font-weight: 400; transform: rotate(calc(var(--a) * -1)); }
+.dial__cap { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle at 42% 36%, #c9c9cc, #6f6f74 45%, #2b2b2f 90%); box-shadow: 0 3px 8px #000, inset 0 1px 0 rgba(255,255,255,.5); transform: rotate(var(--turn, 0deg)); transition: transform .12s steps(2); }
+.dial__cap::after { content: ""; position: absolute; left: 50%; top: 5%; width: 6%; height: 34%; margin-left: -3%; background: #fff; border-radius: 2px; box-shadow: 0 0 3px #000; }
+.knob { top: var(--pot-y); width: var(--pot-d); aspect-ratio: 1; background: var(--chrome); box-shadow: 0 4px 10px #000, 0 0 0 1px #000; }
+.knob--1 { left: var(--pot-x1); } .knob--2 { left: var(--pot-x2); } .knob--3 { left: var(--pot-x3); }
+.knob__cap { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #46464b, #0f0f11 75%); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 5px #000; transform: rotate(var(--turn, 0deg)); transition: transform .1s steps(2); }
+.knob__cap::after { content: ""; position: absolute; left: 50%; top: 8%; width: 10%; height: 36%; margin-left: -5%; background: #fff; border-radius: 1px; }
+/* Brushed legend strip under the pots, covering the photo's own. */
+.legend { position: absolute; left: var(--legend-l); top: var(--legend-t); width: var(--legend-w); height: var(--legend-h); display: grid; grid-template-columns: 1fr 1fr 1fr; place-items: center; background: linear-gradient(180deg, #d9d9d9, #a9a9a9 50%, #cfcfcf); box-shadow: inset 0 0 0 1px #6a6a6a, 0 1px 2px #000; font-size: clamp(6px, .82vw, 11px); letter-spacing: .08em; color: #1a1a1a; font-weight: 700; pointer-events: none; }
+
+/* POWER. Sits on the photo's push-button. */
+.power { position: absolute; left: var(--power-l); top: var(--power-t); width: var(--power-w); height: var(--power-h); display: flex; align-items: center; justify-content: center; gap: 6%; border: 0; border-radius: 3px; cursor: pointer; color: #e8e2d0; letter-spacing: .22em; font-size: clamp(8px, 1.2vw, 16px); background: linear-gradient(180deg, #2b2b2e, #141416); box-shadow: 0 3px 0 #000, 0 6px 10px #000, inset 0 1px 0 #4a4a4f; transition: transform .08s, box-shadow .08s; }
+.power:hover { background: linear-gradient(180deg, #343438, #1a1a1d); }
+.power:active, .set.on .power { transform: translateY(3px); box-shadow: 0 0 0 #000, 0 2px 5px #000, inset 0 1px 0 #4a4a4f; }
+.power__led { width: 9%; aspect-ratio: 1; border-radius: 50%; background: #3a0d0d; box-shadow: inset 0 0 2px #000; }
 .power__led.on { background: #ff3b30; box-shadow: 0 0 10px #ff3b30, 0 0 22px #ff3b30; }
-.foot { height: 16px; margin: 0 40px; border-radius: 0 0 10px 10px; background: linear-gradient(#0d0d0f, #000); }
+
+/* Tones: the black and cream sets have a silver name plate and a dark legend strip; the cream one has a cream POWER cap. */
+.set[data-tone="black"] .plate, .set[data-tone="cream"] .plate { color: #111; text-shadow: none; }
+.set[data-tone="black"] .legend, .set[data-tone="cream"] .legend { background: linear-gradient(180deg, #1c1c1f, #0e0e10); box-shadow: inset 0 0 0 1px #000; color: #e6e6e6; }
+.set[data-tone="cream"] .power { background: linear-gradient(180deg, #efe9d8, #cfc8b3); color: #2a2620; box-shadow: 0 3px 0 #6b6455, 0 6px 10px #000, inset 0 1px 0 #fff; }
+.set[data-tone="cream"] .power:hover { background: linear-gradient(180deg, #f6f1e2, #d8d1bc); }
+.set[data-tone="cream"] .power__led { background: #5a1a14; }
+
+/* SWITCH SET: a small plaque under the television. */
+.switch { display: inline-flex; align-items: center; gap: 14px; justify-self: center; padding: 6px 16px; border: 1px solid #3a3a40; border-radius: 4px; background: rgba(12,12,14,.85); color: #a8a396; font-family: var(--osd); font-size: 17px; letter-spacing: .14em; cursor: pointer; }
+.switch:hover { color: #fff; border-color: #fff; }
+.switch b { font-weight: 400; color: #e8e2d0; } .switch i { font-style: normal; color: #6f6a5e; }
+
+/* The remote: phones only. */
+.remote { display: none; width: min(94vw, 360px); padding: 12px 14px; border-radius: 14px; background: linear-gradient(180deg, #1a1a1d, #0b0b0d); box-shadow: 0 20px 40px #000, inset 0 1px 0 #333; }
+.remote__row { display: grid; grid-template-columns: 74px 44px 1fr 44px; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 16px; letter-spacing: .12em; color: #a8a396; }
+.remote__row b { text-align: center; font-size: 22px; color: #3bff6b; text-shadow: 0 0 8px rgba(59,255,107,.5); }
+.remote__row button, .remote__power { height: 40px; border: 1px solid #3a3a40; border-radius: 8px; background: linear-gradient(180deg, #2c2c31, #17171a); color: #e8e2d0; font-size: 22px; box-shadow: 0 3px 0 #000; cursor: pointer; }
+.remote__row button:active, .remote__power:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+.remote__power { width: 100%; margin-top: 4px; font-size: 18px; letter-spacing: .3em; color: #ff3b30; }
+.remote__power:disabled { opacity: .5; }
+@media (max-width: 800px) { .remote { display: block; } .room { place-content: start center; padding-top: 6vh; overflow-y: auto; } .set { width: 96vw; } }
