@@ -34,11 +34,18 @@ TITLES = {
 # The set keeps its static under these instead of ducking into dead air.
 SILENT = {"05be8c_d2f6df4ea68544c7b74f68f2d3534b12", "05be8c_3aa739c64b534d9bbc86cac8671d1c85", "05be8c_8cc6c94d91d24e6aa8393b339809c589",
           "05be8c_50ace602c61d460bac01384e6c107a4c", "05be8c_b6daf8610b574c779d1f6d59554eccc2"}
+# Video file revision. Bump this whenever the videos are re-encoded: /media/* is
+# served with a one-year immutable cache, so a changed file MUST get a new name
+# or every returning browser keeps the old one (this is how desktops kept the
+# silent transcodes after the audio pass). Posters are unchanged and unversioned.
+VIDEO_REV = "a"
+def video_path(video_id): return f"/media/tx/{video_id}.{VIDEO_REV}.mp4"
+
 items = []
 for e in m:
     sec, order = e.get("section"), e.get("order", 0)
     if sec == "hero":
-        items.append({"id": "cvz-ident", "kind": "tx", "channel": 1, "title": "CVZ", "note": "Station ident", "video": f"/media/tx/{e['video_id']}.mp4", "poster": f"/media/tx/{e['video_id']}.jpg", "w": 16, "h": 9}); continue
+        items.append({"id": "cvz-ident", "kind": "tx", "channel": 1, "title": "CVZ", "note": "Station ident", "video": video_path(e['video_id']), "poster": f"/media/tx/{e['video_id']}.jpg", "w": 16, "h": 9}); continue
     base = e["image"].split("~")[0].split("f0")[0][:38]
     im = Image.open(f"{D}/images/{e['image']}"); w, h = im.size
     title, note = TITLES.get((sec, order), (f"Transmission {order+1:02d}", "Video"))
@@ -47,7 +54,7 @@ for e in m:
           "kind": kind, "channel": {"pull": 2, "blank": 3, "tx": 4}[kind], "title": title, "note": note,
           "image": f"/media/web/{base}_w.jpg", "thumb": f"/media/web/{base}_t.jpg", "w": w, "h": h}
     if e.get("video_id"):
-        it["video"] = f"/media/tx/{e['video_id']}.mp4"; it["poster"] = f"/media/tx/{e['video_id']}.jpg"
+        it["video"] = video_path(e['video_id']); it["poster"] = f"/media/tx/{e['video_id']}.jpg"
         if e["video_id"] in SILENT: it["silent"] = True
     items.append(it)
 # unique ids
