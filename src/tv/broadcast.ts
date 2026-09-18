@@ -200,7 +200,7 @@ export class Broadcast {
       if (e.key === 'ArrowUp' || e.key === 'PageUp') this.tune(this.ch % CHANNELS.length + 1)
       if (e.key === 'ArrowDown' || e.key === 'PageDown') this.tune(((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1)
       if (/^[1-7]$/.test(e.key)) this.tune(Number(e.key))
-      if (e.key === 'ArrowRight') this.step(1); if (e.key === 'ArrowLeft') this.step(-1)
+      if (this.locked) { if (e.key === 'ArrowRight') this.step(1); if (e.key === 'ArrowLeft') this.step(-1) }
       if (e.key === '+' || e.key === '=') this.volume(1); if (e.key === '-' || e.key === '_') this.volume(-1)
       if (e.key === '0') { this.speed = this.speed ? 0 : 1; $('#osd-mode').textContent = this.speed ? 'PLAY ▶' : 'PAUSE ‖'; this.speed ? this.feed.play().catch(() => {}) : this.feed.pause() }
     })
@@ -208,7 +208,7 @@ export class Broadcast {
     addEventListener('wheel', (e) => { if (this.locked || !$('#menu').hidden) return; wheel += e.deltaY; if (Math.abs(wheel) > 260) { this.tune(wheel > 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1); wheel = 0 } }, { passive: true })
     let sx = 0, sy = 0
     addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY }, { passive: true })
-    addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) { if (this.locked) this.unlock(); else this.tune(dy < 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1) } else if (Math.abs(dx) > 70) this.step(dx < 0 ? 1 : -1) }, { passive: true })
+    addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) { if (this.locked) this.unlock(); else this.tune(dy < 0 ? this.ch % CHANNELS.length + 1 : ((this.ch - 2 + CHANNELS.length) % CHANNELS.length) + 1) } else if (Math.abs(dx) > 70 && this.locked) this.step(dx < 0 ? 1 : -1) }, { passive: true })
     $('#lock').addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('.chyron, video')) this.unlock() })
     $('#menu').addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); const h = (e.target as HTMLElement).closest('h3'); if (li) { this.menu(false); this.lock(li.dataset.id!) } else if (h?.dataset.ch) { this.menu(false); this.tune(Number(h.dataset.ch)) } })
     $('#menu-btn').addEventListener('click', () => this.menu($('#menu').hidden))
