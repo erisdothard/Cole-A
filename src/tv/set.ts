@@ -1,8 +1,7 @@
 /* Stage 1: the set in the room. A photographed 1978 console with the
    controls live on top of it: turn the channel dial, VOL, BRIGHT and
    V-HOLD, then press POWER. The tube warms up and the camera pushes into
-   the glass until you are inside it. On a phone the knobs are too small to
-   grab, so a remote under the set drives the same controls. */
+   the glass until you are inside it. */
 
 import { sfx } from './audio'
 import { Knob, applyBright, readBright, setVHold } from './knobs'
@@ -34,25 +33,22 @@ export function armSet(onInside: () => Promise<void> | void): void {
   const knobs = {
     ch: new Knob($('#dial'), { label: 'Channel', min: 1, max: CHANNELS.length, value: chFromHash(), sweep: 300, onChange: (n) => {
       if (!/^#item\//.test(location.hash)) history.replaceState(null, '', `#ch/${n}`)
-      $('#r-ch').textContent = String(n)
     } }),
-    vol: new Knob($('#k-vol'), { label: 'Volume', min: 0, max: sfx.max, value: sfx.level(), onChange: (v) => { sfx.setVolume(v); $('#r-vol').textContent = String(v) } }),
-    bright: new Knob($('#k-bright'), { label: 'Brightness', min: 0, max: 10, value: readBright(), onChange: (v) => { applyBright(v); $('#r-bright').textContent = String(v) } }),
+    vol: new Knob($('#k-vol'), { label: 'Volume', min: 0, max: sfx.max, value: sfx.level(), onChange: (v) => sfx.setVolume(v) }),
+    bright: new Knob($('#k-bright'), { label: 'Brightness', min: 0, max: 10, value: readBright(), onChange: applyBright }),
     vhold: new Knob($('#k-vhold'), { label: 'Vertical hold', min: -5, max: 5, value: 0, onChange: (v) => {
       setVHold(v); glass.classList.toggle('rolling', v !== 0); glass.classList.toggle('rolling--up', v < 0)
-      glass.style.setProperty('--roll-dur', `${(6 - Math.abs(v)) * 0.32}s`); $('#r-vhold').textContent = v > 0 ? `+${v}` : String(v)
+      glass.style.setProperty('--roll-dur', `${(6 - Math.abs(v)) * 0.32}s`)
     } }),
   }
   applyBright(readBright())
-  $('#r-ch').textContent = String(knobs.ch.value); $('#r-vol').textContent = String(knobs.vol.value); $('#r-bright').textContent = String(knobs.bright.value)
-  for (const b of document.querySelectorAll<HTMLButtonElement>('.remote [data-k]')) b.addEventListener('click', () => knobs[b.dataset.k as keyof typeof knobs].step(Number(b.dataset.d)))
   addEventListener('hashchange', () => { if (!fired) knobs.ch.set(chFromHash(), true) })
 
   /* ---- POWER ---- */
   const go = async () => {
     if (fired) return
     fired = true
-    power.disabled = true; $<HTMLButtonElement>('#power-remote').disabled = true
+    power.disabled = true
     sfx.powerOn()
     led.classList.add('on')
     set.classList.add('on')
@@ -86,6 +82,5 @@ export function armSet(onInside: () => Promise<void> | void): void {
   }
 
   power.addEventListener('click', go)
-  $('#power-remote').addEventListener('click', go)
   addEventListener('keydown', (e) => { if (e.key === 'Enter' && !fired && !(e.target as HTMLElement).closest('[role=slider]')) go() })
 }

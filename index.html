@@ -29,13 +29,6 @@
       <button id="power" class="power" type="button" aria-label="Power up"><span class="power__led" id="led"></span><span class="power__cap">POWER</span></button>
     </div>
     <button id="switch-set" class="switch" type="button" aria-label="Switch to another television set"><span>SWITCH SET</span><b id="switch-name"></b><i id="switch-n"></i></button>
-    <div class="remote" id="remote" aria-label="Remote">
-      <div class="remote__row"><span>CH</span><button type="button" data-k="ch" data-d="-1">−</button><b id="r-ch">1</b><button type="button" data-k="ch" data-d="1">+</button></div>
-      <div class="remote__row"><span>VOL</span><button type="button" data-k="vol" data-d="-1">−</button><b id="r-vol"></b><button type="button" data-k="vol" data-d="1">+</button></div>
-      <div class="remote__row"><span>BRIGHT</span><button type="button" data-k="bright" data-d="-1">−</button><b id="r-bright"></b><button type="button" data-k="bright" data-d="1">+</button></div>
-      <div class="remote__row"><span>V-HOLD</span><button type="button" data-k="vhold" data-d="-1">−</button><b id="r-vhold">0</b><button type="button" data-k="vhold" data-d="1">+</button></div>
-      <button id="power-remote" class="remote__power" type="button">POWER</button>
-    </div>
   </div>
 
   <!-- INSIDE THE TUBE. Everything after POWER lives here. -->
@@ -64,7 +57,6 @@
       </section>
 
       <div id="static" class="static" aria-hidden="true"><canvas id="snow"></canvas></div>
-      <div class="tube__dim" aria-hidden="true"></div><div class="tube__wash" aria-hidden="true"></div>
     </div>
     <div class="tube__glass" aria-hidden="true"></div>
     <nav class="nav" aria-label="Browse">

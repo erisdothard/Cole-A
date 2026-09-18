@@ -73,18 +73,15 @@ export class Knob {
   }
 }
 
-/* Picture settings the knobs own. Brightness is remembered like volume;
-   vertical hold is a per-visit thing — you set it, you live with it. */
+/* Picture settings the knobs own, on the set's glass. Brightness is remembered like volume. */
 const BRIGHT_KEY = 'cvz.bright'
 export function readBright(): number {
   try { const raw = localStorage.getItem(BRIGHT_KEY); if (raw === null) return 6; const v = Number(raw); return Number.isInteger(v) && v >= 0 && v <= 10 ? v : 6 } catch { return 6 }
 }
 export function applyBright(v: number) {
   try { localStorage.setItem(BRIGHT_KEY, String(v)) } catch { /* this visit only */ }
-  // 0 is a dim, dying tube; 6 is factory; 10 is blown out. The room glass takes
-  // it as a filter (tiny element); the tube takes it as two flat overlay layers.
-  const b = 0.55 + v * 0.085, root = document.documentElement.style
-  root.setProperty('--bright', String(b)); root.setProperty('--dim', String(Math.max(0, 1 - b).toFixed(3))); root.setProperty('--wash', String((Math.max(0, b - 1) * 0.55).toFixed(3)))
+  // 0 is a dim, dying tube; 6 is factory; 10 is blown out. Affects the glass on the set.
+  document.documentElement.style.setProperty('--bright', String(0.55 + v * 0.085))
 }
 let vhold = 0
 export function setVHold(v: number) { vhold = v; document.documentElement.style.setProperty('--vhold', String(v)) }

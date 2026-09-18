@@ -6,7 +6,6 @@ import { CHANNELS, ITEMS, SPAM, TAPES, BIO, CONTACT, type Item } from '../conten
 import { sfx } from './audio'
 import { drift, makeCard, makeFile, makeFragment, makeScreen, makeTape, makeWindow, type Obj } from './objects'
 import { getFx } from '../fx/prefs'
-import { getVHold } from './knobs'
 
 const $ = <T extends HTMLElement>(s: string) => document.querySelector(s) as T
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -38,7 +37,6 @@ export class Broadcast {
     this.tune(item?.channel ?? this.chFromHash() ?? 1, true)
     sfx.bed(true)
     this.bind()
-    this.vhold()
     requestAnimationFrame((n) => this.frame(n))
     await wait(300)
     if (item) this.lock(item.id)
@@ -163,14 +161,6 @@ export class Broadcast {
     s.textContent = text; s.style.left = `${8 + Math.random() * 60}%`; s.style.top = `${10 + Math.random() * 70}%`
     $('#spam').appendChild(s); sfx.blip()
     setTimeout(() => s.classList.add('out'), 2200 + Math.random() * 1800); setTimeout(() => s.remove(), 4600)
-  }
-
-  /** V-HOLD off centre: the picture rolls on the way in, then the set finds lock on its own. */
-  private vhold() {
-    const v = getVHold(); if (!v || !this.speed) return
-    this.tube.style.setProperty('--roll-dur', `${(6 - Math.abs(v)) * 0.32}s`); this.tube.classList.add('rolling', v < 0 ? 'rolling--up' : 'rolling--down')
-    this.say('ADJUST VERTICAL HOLD', 'warn')
-    setTimeout(() => { this.tube.classList.remove('rolling', 'rolling--up', 'rolling--down'); this.burst(180); sfx.static(180); this.say('V-HOLD LOCKED', 'ok') }, 4200 + Math.abs(v) * 900)
   }
 
   /* ---------------- volume ---------------- */
