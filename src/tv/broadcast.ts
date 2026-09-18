@@ -27,14 +27,17 @@ export class Broadcast {
   private snow = new Snow($<HTMLCanvasElement>('#snow'))
 
   async start() {
+    // Read the deep link before tune() rewrites the hash to the channel.
+    const id = this.itemFromHash()
+    const item = id ? ITEMS.find((i) => i.id === id) : undefined
     this.tube.hidden = false
     this.tube.classList.add('on')
-    this.tune(this.chFromHash() ?? 1, true)
+    this.tune(item?.channel ?? this.chFromHash() ?? 1, true)
     sfx.bed(true)
     this.bind()
     requestAnimationFrame((n) => this.frame(n))
     await wait(300)
-    const id = this.itemFromHash(); if (id) this.lock(id)
+    if (item) this.lock(item.id)
   }
 
   /* ---------------- channels ---------------- */

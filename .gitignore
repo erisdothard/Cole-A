@@ -10,7 +10,6 @@ out/
 
 # Third-party reference footage (copyrighted) — never commit
 reference/trailer/
-public/media
 shots/
 
 # derived media (regenerate: scripts/build-archive.py + ffmpeg pass in session notes)
