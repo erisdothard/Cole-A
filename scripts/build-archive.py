@@ -22,9 +22,9 @@ TITLES = {
     ("portfolio", 12): ("No Original Thought", "Artwork"), ("portfolio", 13): ("Dorsia — Easter", "Poster · Charmers"),
     ("portfolio", 14): ("Red", "Portrait"), ("portfolio", 15): ("Matchbook", "Motion"),
     ("portfolio", 16): ("Dorsia — 4th of July", "Poster · Charmers"), ("portfolio", 17): ("Blue Room", "Still · 17 5:22"),
-    ("portfolio", 18): ("Back to Lonely Nights", "Tracklist · sleeve"), ("portfolio", 19): ("Nashville Dance Show", "Poster · Rosemary & Beauty Queen"),
+    ("portfolio", 18): ("Back to Lonely Nights", "Tracklist · sleeve"), ("portfolio", 19): ("Nashville Dance Show", "Poster · Rosemary & Booty Queen"),
     ("portfolio", 20): ("Pink", "Motion"), ("portfolio", 21): ("Dorsia — crowd", "Still"),
-    ("portfolio", 22): ("New Year's Eve 2026", "Rosemary & Beauty Queen · motion"), ("portfolio", 23): ("Los Depressos", "Logo"),
+    ("portfolio", 22): ("New Year's Eve 2026", "Rosemary & Booty Queen · motion"), ("portfolio", 23): ("Los Depressos", "Logo"),
     ("merch", 9): ("Hoodie", "Brown · front/back"), ("merch", 10): ("Religious Holidays", "Tee"), ("merch", 11): ("Dorsia 10", "Jersey"),
     ("merch", 12): ("Dorsia colourways", "Tee · jersey · hoodie"), ("merch", 13): ("Dodger Bootleg", "Tee"), ("merch", 14): ("Dorsia ringer", "Tee"),
     ("merch", 15): ("Dorsia socks", "Socks"), ("merch", 16): ("The 10th Muse", "Tee"), ("merch", 17): ("Crvck Apparel", "Tee"),
@@ -40,6 +40,24 @@ SILENT = {"05be8c_d2f6df4ea68544c7b74f68f2d3534b12", "05be8c_3aa739c64b534d9bbc8
 # silent transcodes after the audio pass). Posters are unchanged and unversioned.
 VIDEO_REV = "a"
 def video_path(video_id): return f"/media/tx/{video_id}.{VIDEO_REV}.mp4"
+
+# Pieces Cole sent after the Wix export. Original stays in reference/client/
+# (not committed); the web copies are cut here. crop = (l, t, r, b) on the source.
+EXTRAS = [
+    {"id": "b-21", "kind": "blank", "title": "N.D.S Tee", "note": "Nashville Dance Show · front/back", "src": "reference/client/MOCKUP_NDS_SHIRT_1.png", "slug": "nds_shirt_1", "crop": (20, 520, 985, 1440), "back": (1000, 520, 1980, 1440), "before": "b-10"},
+]
+# Cole's own videos that live on YouTube (no master file yet). The still is the
+# video's own thumbnail, saved under reference/client/.
+LINKS = [
+    {"id": "synthetic-luv", "kind": "tx", "title": "Synthetic Luv", "note": "Ken Sable feat. Becky Jonez · music video", "youtube": "mXuDxhtBxNY", "src": "reference/client/synthetic-luv.jpg", "slug": "synthetic-luv"},
+]
+def cut(x):
+    src = Image.open(x["src"]).convert("RGB"); im = src.crop(x["crop"])
+    for suffix, edge, q in (("w", 1400, 84), ("t", 480, 80)):
+        c = im.copy(); c.thumbnail((edge, edge), Image.LANCZOS); c.save(f"public/media/web/{x['slug']}_{suffix}.jpg", quality=q, optimize=True, progressive=True)
+    if "back" in x:  # a second side, shown beside the front when the piece is in focus
+        b = src.crop(x["back"]); b.thumbnail((1400, 1400), Image.LANCZOS); b.save(f"public/media/web/{x['slug']}_back_w.jpg", quality=84, optimize=True, progressive=True)
+    return im.size
 
 items = []
 for e in m:
@@ -57,6 +75,19 @@ for e in m:
         it["video"] = video_path(e['video_id']); it["poster"] = f"/media/tx/{e['video_id']}.jpg"
         if e["video_id"] in SILENT: it["silent"] = True
     items.append(it)
+for x in EXTRAS:
+    w, h = cut(x)
+    it = {"id": x["id"], "kind": x["kind"], "channel": {"pull": 2, "blank": 3, "tx": 4}[x["kind"]], "title": x["title"], "note": x["note"],
+          "image": f"/media/web/{x['slug']}_w.jpg", "thumb": f"/media/web/{x['slug']}_t.jpg", "w": w, "h": h}
+    if "back" in x: it["back"] = f"/media/web/{x['slug']}_back_w.jpg"
+    at = next((i for i, o in enumerate(items) if o["id"] == x.get("before")), len(items))
+    items.insert(at, it)
+for x in LINKS:
+    im = Image.open(x["src"]).convert("RGB"); w, h = im.size
+    for suffix, edge, q in (("w", 1400, 84), ("t", 480, 80)):
+        c = im.copy(); c.thumbnail((edge, edge), Image.LANCZOS); c.save(f"public/media/web/{x['slug']}_{suffix}.jpg", quality=q, optimize=True, progressive=True)
+    items.append({"id": x["id"], "kind": "tx", "channel": 4, "title": x["title"], "note": x["note"], "youtube": x["youtube"],
+                  "image": f"/media/web/{x['slug']}_w.jpg", "thumb": f"/media/web/{x['slug']}_t.jpg", "poster": f"/media/web/{x['slug']}_w.jpg", "w": w, "h": h})
 # unique ids
 seen = {}
 for it in items:

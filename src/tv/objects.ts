@@ -1,11 +1,11 @@
-/* The things that float through the broadcast. Cole listed them himself:
-   windows, files, transmissions, folders, screens, fragments. Each type is
-   a different piece of television furniture, never an OS widget. */
+/* The things that float through a tape. Cole listed them himself:
+   windows, files, transmissions, screens, fragments. Each type is a
+   different piece of television furniture, never an OS widget. (The tapes
+   themselves live on the shelf now — src/tv/shelf.ts.) */
 
 import type { Item } from '../content/content'
-import { TAPES } from '../content/content'
 
-export type Kind = 'window' | 'file' | 'screen' | 'tape' | 'card' | 'fragment'
+export type Kind = 'window' | 'file' | 'screen' | 'card' | 'fragment'
 
 export type Obj = {
   el: HTMLElement
@@ -49,13 +49,6 @@ export function makeCard(item: Item): Obj {
   return spawn(node, 'card', item, w, h + 40)
 }
 
-export function makeTape(i: number): Obj {
-  const t = TAPES[i % TAPES.length]
-  const node = el('obj obj--tape', `<div class="tape"><div class="tape__reels"><i></i><i></i></div><div class="tape__label"><b>${t.label}</b><span>${t.hand}</span></div></div>`)
-  node.dataset.tape = String(i % TAPES.length)
-  return spawn(node, 'tape', undefined, 230, 140)
-}
-
 export function makeFragment(): Obj {
   const txt = FRAGMENTS[Math.floor(Math.random() * FRAGMENTS.length)]
   const node = el('obj obj--fragment', `<span>${txt}</span>`)
@@ -69,7 +62,7 @@ function spawn(node: HTMLElement, kind: Kind, item: Item | undefined, w: number,
   const speed = kind === 'fragment' ? R(28, 55) : R(9, 26)
   const dir = Math.random() < 0.65 ? -1 : 1
   const o: Obj = { el: node, kind, item, x: lane * (innerWidth + w) - w, y: R(90, Math.max(100, innerHeight - h - 90)), vx: speed * dir, vy: R(-4, 4), w, h, bob: Math.random() * 6.28, held: false }
-  node.style.zIndex = String(kind === 'fragment' ? 3 : kind === 'tape' ? 4 : 5)
+  node.style.zIndex = String(kind === 'fragment' ? 3 : 5)
   return o
 }
 

@@ -10,25 +10,35 @@
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Anton&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- THE SET. A real television in a dark room. Photo cabinet; the glass, dial, knobs and POWER are live on top of it. -->
+  <!-- THE SET. A mid-90s TV on its VCR, RCA cables plugged in, in a dim den. Photographed; the glass, the tape slot and six buttons are live on top of it. -->
   <div id="room" class="room">
+    <div id="room-dark" class="room-dark" aria-hidden="true"></div>
     <div id="set" class="set">
-      <img class="set__photo" src="/tv/cabinet-a.webp" width="1107" height="663" alt="" draggable="false" fetchpriority="high" decoding="async" />
-      <div id="glass" class="glass"><div id="tube-off" class="tube-off"></div></div>
-      <div class="plate"><span>CVZ</span></div>
-      <div id="dial" class="dial" aria-label="Channel">
-        <div class="dial__face">
-          <i class="dial__n" style="--a:-150deg"><b>1</b></i><i class="dial__n" style="--a:-100deg"><b>2</b></i><i class="dial__n" style="--a:-50deg"><b>3</b></i><i class="dial__n" style="--a:0deg"><b>4</b></i><i class="dial__n" style="--a:50deg"><b>5</b></i><i class="dial__n" style="--a:100deg"><b>6</b></i><i class="dial__n" style="--a:150deg"><b>7</b></i>
-        </div>
-        <div class="dial__cap"></div>
-      </div>
-      <div id="k-bright" class="knob knob--1"><div class="knob__cap"></div></div>
-      <div id="k-vhold" class="knob knob--2"><div class="knob__cap"></div></div>
-      <div id="k-vol" class="knob knob--3"><div class="knob__cap"></div></div>
-      <div class="legend" aria-hidden="true"><span>BRIGHT</span><span>V-HOLD</span><span>VOL</span></div>
-      <button id="power" class="power" type="button" aria-label="Power up"><span class="power__led" id="led"></span><span class="power__cap">POWER</span></button>
+      <div class="set__glow" aria-hidden="true"></div>
+      <div class="stand" aria-hidden="true"></div>
+      <img class="set__photo" src="/tv/stack3.webp" width="932" height="960" alt="" draggable="false" fetchpriority="high" decoding="async" />
+      <div id="glass" class="glass"><div id="tube-off" class="tube-off"></div><video id="glass-feed" class="glass-feed" muted playsinline loop preload="auto"></video><div id="glass-dim" class="glass-dim"></div><div id="glass-bloom" class="glass-bloom"></div><div id="glass-say" class="glass-say" hidden></div></div>
+      <div class="badge" aria-hidden="true">CVZ</div>
+      <div id="slot" class="slot" aria-hidden="true"><i class="slot__tape"></i></div>
+      <span class="set__led" id="led" aria-hidden="true"></span>
+      <button class="sbtn" data-btn="vol-dn" type="button" aria-label="Volume down"><span>−</span><em class="sbtn__group">VOL</em></button>
+      <button class="sbtn" data-btn="vol-up" type="button" aria-label="Volume up"><span>+</span></button>
+      <button class="sbtn" data-btn="ch-dn" type="button" aria-label="Previous tape"><span>▼</span><em class="sbtn__group">CH</em></button>
+      <button class="sbtn" data-btn="ch-up" type="button" aria-label="Next tape"><span>▲</span></button>
+      <button class="sbtn" data-btn="eject" type="button" aria-label="Eject"><span>EJECT</span></button>
+      <button class="sbtn sbtn--power" data-btn="power" id="power" type="button" aria-label="Power up"><span>POWER</span></button>
     </div>
-    <button id="switch-set" class="switch" type="button" aria-label="Switch to another television set"><span>SWITCH SET</span><b id="switch-name"></b><i id="switch-n"></i></button>
+    <!-- THE SHELF. Next to the set once it is on: a pile of five VHS tapes. -->
+    <section id="shelf" class="shelf" hidden aria-label="Tapes">
+      <div class="shelf__head"><span id="shelf-say">INSERT TAPE</span></div>
+      <div class="shelf__row" id="shelf-row" role="listbox" aria-label="Select a tape"></div>
+    </section>
+    <div class="room__logo" aria-hidden="true">CVZ</div>
+    <p class="room__name">COLE ANDERSON <i>·</i> VISUAL DESIGN <i>·</i> CHICAGO – NASHVILLE</p>
+    <div class="roomvol" role="group" aria-label="Volume">
+      <button id="room-mute" class="roomvol__mute" type="button" aria-pressed="true">STATIC ON</button>
+      <span class="roomvol__label">VOL</span><span class="vbar" id="room-vbar" aria-hidden="true"></span><b id="room-vol-n" aria-live="polite">05</b>
+    </div>
   </div>
 
   <!-- INSIDE THE TUBE. Everything after POWER lives here. -->
@@ -40,8 +50,8 @@
       <div id="spam" class="spam" aria-live="polite"></div>
 
       <div class="osd osd--tl" id="osd-tl"><span id="osd-mode">PLAY ▶</span> <span id="osd-tc">SP 0:00:00</span></div>
-      <div class="osd osd--tr" id="osd-ch"><span id="osd-num">CH 1</span><span id="osd-name">CVZ</span></div>
-      <div class="osd osd--br" id="osd-help">◀▶ NEXT · ▲▼ CH · +− VOL · ESC</div>
+      <div class="osd osd--tr" id="osd-ch"><span id="osd-num">NO TAPE</span><span id="osd-name">CVZ-TV</span><span id="osd-where"></span></div>
+      <div class="osd osd--br" id="osd-help"></div>
       <div class="osd osd--vol" id="osd-vol" hidden aria-live="polite"><span>VOL</span><span class="vbar" id="osd-vol-bar" aria-hidden="true"></span><span id="osd-vol-n"></span></div>
       <div class="osd osd--bl" id="osd-hover" hidden>▶ SELECT</div>
 
@@ -51,9 +61,10 @@
         <div class="osd osd--tl">PAUSE ‖ <span id="lk-tc"></span></div>
       </section>
 
-      <section id="menu" class="menu" hidden aria-label="Index">
-        <div class="menu__head"><span>CVZ-TV · MENU</span><span>EVERYTHING ON THE SET · ESC TO CLOSE</span></div>
-        <div class="menu__cols" id="menu-cols"></div>
+      <!-- THE INDEX. Every folder and piece on the tape that is in. -->
+      <section id="index" class="index" hidden aria-label="Index">
+        <div class="index__head"><span id="index-title"></span><span>M · ESC TO CLOSE</span></div>
+        <div class="index__body"><div class="index__tree" id="index-tree"></div><div class="index__view" id="index-view"></div></div>
       </section>
 
       <div id="static" class="static" aria-hidden="true"><canvas id="snow"></canvas></div>
@@ -61,13 +72,14 @@
     <div class="tube__glass" aria-hidden="true"></div>
     <nav class="nav" aria-label="Browse">
       <button id="prev-btn" class="nav-btn" type="button">◀ PREV</button>
-      <button id="menu-btn" class="nav-btn" type="button">MENU</button>
+      <button id="index-btn" class="nav-btn" type="button">INDEX</button>
       <button id="next-btn" class="nav-btn" type="button">NEXT ▶</button>
+      <button id="eject-btn" class="nav-btn nav-btn--eject" type="button">⏏ EJECT</button>
     </nav>
     <div class="volctl" role="group" aria-label="Volume">
       <button id="vol-dn" class="ctl" type="button" aria-label="Volume down">VOL −</button>
       <button id="vol-up" class="ctl" type="button" aria-label="Volume up">VOL +</button>
-      <button id="mute-btn" class="ctl" type="button" aria-pressed="false">MUTE</button>
+      <button id="mute-btn" class="ctl" type="button" aria-pressed="true">STATIC ON</button>
     </div>
   </main>
 

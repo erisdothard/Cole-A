@@ -129,6 +129,18 @@
   "silent": true
  },
  {
+  "id": "b-21",
+  "kind": "blank",
+  "channel": 3,
+  "title": "N.D.S Tee",
+  "note": "Nashville Dance Show \u00b7 front/back",
+  "image": "/media/web/nds_shirt_1_w.jpg",
+  "thumb": "/media/web/nds_shirt_1_t.jpg",
+  "w": 965,
+  "h": 920,
+  "back": "/media/web/nds_shirt_1_back_w.jpg"
+ },
+ {
   "id": "b-10",
   "kind": "blank",
   "channel": 3,
@@ -477,7 +489,7 @@
   "kind": "pull",
   "channel": 2,
   "title": "Nashville Dance Show",
-  "note": "Poster \u00b7 Rosemary & Beauty Queen",
+  "note": "Poster \u00b7 Rosemary & Booty Queen",
   "image": "/media/web/05be8c_bb62ec661740453cbbf95a091e29971_w.jpg",
   "thumb": "/media/web/05be8c_bb62ec661740453cbbf95a091e29971_t.jpg",
   "w": 5400,
@@ -512,7 +524,7 @@
   "kind": "tx",
   "channel": 4,
   "title": "New Year's Eve 2026",
-  "note": "Rosemary & Beauty Queen \u00b7 motion",
+  "note": "Rosemary & Booty Queen \u00b7 motion",
   "image": "/media/web/05be8c_aa40adb416f94bcf8fd62925e08fdf2_w.jpg",
   "thumb": "/media/web/05be8c_aa40adb416f94bcf8fd62925e08fdf2_t.jpg",
   "w": 1920,
@@ -530,5 +542,18 @@
   "thumb": "/media/web/05be8c_fefd15c50d8148dfa9a28f5e6d7bbc4_t.jpg",
   "w": 2000,
   "h": 2000
+ },
+ {
+  "id": "synthetic-luv",
+  "kind": "tx",
+  "channel": 4,
+  "title": "Synthetic Luv",
+  "note": "Ken Sable feat. Becky Jonez \u00b7 music video",
+  "youtube": "mXuDxhtBxNY",
+  "image": "/media/web/synthetic-luv_w.jpg",
+  "thumb": "/media/web/synthetic-luv_t.jpg",
+  "poster": "/media/web/synthetic-luv_w.jpg",
+  "w": 1280,
+  "h": 720
  }
 ]

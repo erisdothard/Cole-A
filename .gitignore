@@ -19,3 +19,9 @@ reference/wix-export/sheets/
 docs/concept/frames/proto/
 reference/trailer/
 .vercel
+
+# client-supplied originals (web copies live in public/media/web)
+reference/client/
+
+# vite build output (Vercel builds its own)
+dist/
