@@ -1,7 +1,8 @@
-/* The pile: five VHS tapes next to the set, lying spine-out the way tapes
+/* The pile: four VHS tapes next to the set, lying spine-out the way tapes
    sit on a shelf. The only navigation. Pick one, it slides out of the pile
    and into the set's own slot, and the set takes you inside. EJECT brings
-   the tape — and you — back out. Cole's revision of 2026-10-05. */
+   the tape — and you — back out. Cole's revisions of 2026-10-05 and -21:
+   nothing goes in until the viewer picks a tape. */
 
 import { TAPES, tapeItems, type Tape } from '../content/content'
 import { sfx } from './audio'

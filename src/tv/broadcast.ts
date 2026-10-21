@@ -40,6 +40,7 @@ export class Broadcast {
   /** Build the inside while the camera is still moving: the tube sits fully under the (opaque) room, so the
       work happens off-screen and the zoom — a compositor animation — never waits for it. */
   prepare(t: Tape) {
+    if (this.tube.hidden) this.link = location.hash // the link the viewer came in on, before play() writes this tape's own
     if (!this.bound) { this.bound = true; this.bind(); sfx.bed(true); requestAnimationFrame((n) => this.frame(n)) }
     this.play(t, true)
     this.host.style.opacity = '0'
@@ -50,8 +51,10 @@ export class Broadcast {
   }
   /** The camera has arrived: same footage, same frame as the set's screen, and the pieces come in. */
   async start(t: Tape) {
-    const h = location.hash, id = this.itemFromHash(h), page = h.match(/^#tape\/bio\/(about|contact)/)?.[1] as Folder['page'] | undefined
     if (this.tape !== t || this.tube.hidden) this.prepare(t)
+    // Open the piece or page the link named, if it is on the tape the viewer picked.
+    const h = tapeFromHash(this.link) === t ? this.link : '', id = this.itemFromHash(h), page = h.match(/^#tape\/bio\/(about|contact)/)?.[1] as Folder['page'] | undefined
+    this.link = ''
     this.burst(300) // the cut from the set's snow to the picture
     this.feed.animate([{ transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 1100, easing: 'cubic-bezier(.22, .9, .3, 1)' }) // the push's momentum carried through the seam
     this.tube.classList.remove('waiting')
@@ -106,6 +109,7 @@ export class Broadcast {
     await finish?.()
   }
   private ejecting = false
+  private link = ''
 
   private populate(t: Tape) {
     this.host.innerHTML = ''; this.objs = []
@@ -222,8 +226,9 @@ export class Broadcast {
     const cur = locate(this.cursor?.id ?? '')?.folder ?? this.tape!.folders[0]
     const isOpen = (t: Tape, f: Folder) => t === this.tape && f === cur // one folder open at a time, as he drew it; the rest are a click away
     $('#index-title').textContent = `CVZ-TV · INDEX · TAPE ${pad(this.tape!.n)} IN`
-    $('#index-tree').innerHTML = TAPES.map((t) => `<div class="tree__tape${t === this.tape ? ' in' : ''}" data-tape="${t.slug}" style="--tape-c:${t.color}">
-      <button class="tree__root" type="button" aria-expanded="${t === this.tape}"><b>${t.name}</b><em>TAPE ${pad(t.n)} · ${tapeItems(t).length} PCS</em></button>
+    // Each tape drops down (Cole, 2026-10-21): the one that is in starts open, the rest folded away; ▶ PLAY swaps the tape.
+    $('#index-tree').innerHTML = TAPES.map((t) => `<div class="tree__tape${t === this.tape ? ' in open' : ''}" data-tape="${t.slug}" style="--tape-c:${t.color}">
+      <div class="tree__head"><button class="tree__root" type="button" aria-expanded="${t === this.tape}"><i>▸</i><b>${t.name}</b><em>TAPE ${pad(t.n)} · ${tapeItems(t).length} PCS</em></button>${t === this.tape ? '' : `<button class="tree__play" type="button" aria-label="Play tape ${pad(t.n)}, ${t.name}">▶ PLAY</button>`}</div>
       ${t.folders.map((f, fi) => {
         const items = f.ids.map((id) => ITEMS.find((i) => i.id === id)!).filter(Boolean)
         const last = fi === t.folders.length - 1
@@ -302,11 +307,12 @@ export class Broadcast {
     }, { passive: true })
     $('#lock').addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('.chyron, video, iframe, .page')) this.unlock() })
     $('#index').addEventListener('click', (e) => {
-      const el = e.target as HTMLElement, li = el.closest<HTMLElement>('.tree__item'), row = el.closest<HTMLElement>('.tree__row'), root = el.closest<HTMLElement>('.tree__root')
+      const el = e.target as HTMLElement, li = el.closest<HTMLElement>('.tree__item'), row = el.closest<HTMLElement>('.tree__row'), root = el.closest<HTMLElement>('.tree__root'), play = el.closest<HTMLElement>('.tree__play')
       if (li?.dataset.id) { this.index(false); this.lock(li.dataset.id) }
       else if (li?.dataset.page) { this.index(false); this.page(li.dataset.page as Folder['page']) }
       else if (row) { const f = row.parentElement!; const open = f.classList.toggle('open'); row.setAttribute('aria-expanded', String(open)); sfx.blip() }
-      else if (root) { const t = TAPES.find((x) => x.slug === root.parentElement!.dataset.tape)!; if (t !== this.tape) { this.index(false); this.unlock(); this.play(t) } }
+      else if (root) { const tp = root.closest<HTMLElement>('.tree__tape')!; const open = tp.classList.toggle('open'); root.setAttribute('aria-expanded', String(open)); sfx.blip() }
+      else if (play) { const t = TAPES.find((x) => x.slug === play.closest<HTMLElement>('.tree__tape')!.dataset.tape)!; if (t !== this.tape) { this.index(false); this.unlock(); this.play(t) } }
       else if (el.closest('#tree-eject')) this.eject()
     })
     $('#index').addEventListener('pointerover', (e) => { const li = (e.target as HTMLElement).closest<HTMLElement>('.tree__item'); if (li?.dataset.id) this.preview(ITEMS.find((i) => i.id === li.dataset.id)) })

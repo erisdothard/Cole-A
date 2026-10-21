@@ -1,5 +1,6 @@
 /* Stage 1: the set in the room. A photographed 1990s TV/VCR combo with its
-   front buttons live: VOL − / +, CH ▼ / ▲, EJECT, POWER. The tube warms up,
+   front buttons live: VOL − / +, CH ▼ / ▲, EJECT, POWER — and the CVZ plate,
+   which is the big POWER (Cole, 2026-10-21: so nobody has to hunt for it). The tube warms up,
    the set slides aside and a pile of five VHS tapes is next to it. Put one
    in its slot, the glass says PLAY, and the camera pushes into the screen
    until you are inside it. EJECT, from inside, pulls the camera back out
@@ -18,14 +19,14 @@ const pad = (n: number) => String(n).padStart(2, '0')
 export type Stage = { pullOut(from: Tape): Promise<() => Promise<void>> }
 
 export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void, onPrepare: (t: Tape) => void): Stage {
-  const power = $<HTMLButtonElement>('#power')
+  const power = $<HTMLButtonElement>('#power'), powerSmall = $<HTMLButtonElement>('[data-btn="power"]')
   const led = $('#led'), set = $('#set'), room = $('#room'), glass = $('#glass'), off = $('#tube-off'), say = $('#glass-say')
   const btn = (id: string) => set.querySelector<HTMLButtonElement>(`[data-btn="${id}"]`)!
   let fired = false
   let gen = 0 // bumps on every pull-out, so a late write from an earlier push-in can be ignored
   let pick = (tapeFromHash()?.n ?? 1) - 1 // the tape CH ▼ / ▲ has selected
-  // A link to a piece or a page goes straight in after POWER; a bare #tape/… only pre-selects that tape on the pile.
-  const link = /^#(item\/|tape\/bio\/(about|contact))/.test(location.hash) ? tapeFromHash() : null
+  // Any link only pre-selects its tape on the pile: nothing goes in until the viewer picks a tape (Cole, 2026-10-21).
+  // Once it is in, the inside opens the piece or page the link named.
 
   applyCombo(set)
 
@@ -138,7 +139,7 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
   const go = async () => {
     if (fired) return
     fired = true
-    power.disabled = true; press(power)
+    power.disabled = powerSmall.disabled = true; press(power)
     sfx.setLevel(5); showVol() // POWER and the room play at 5
     sfx.powerOn()
     led.classList.add('on')
@@ -149,6 +150,7 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
     await wait(420)
     off.classList.add('open')
     sfx.warmUp(900)
+    shelf.busy = true // the tapes slide in under where POWER was: a second tap must not put one in before the set has arrived
     const moving = pushTo()
     await wait(500)
 
@@ -157,12 +159,11 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
     await wait(700)
     sfx.introOff(); sfx.bed(true) // the whine tails off, the low static takes over
     await moving
+    shelf.busy = false
     glassSay('INSERT TAPE', 'blink')
-    // A deep link already knows which tape: put it straight in.
-    if (link) { await wait(400); shelf.insert(TAPES.indexOf(link), true).catch(() => shelf.show(pick)) }
   }
 
-  power.addEventListener('click', go)
+  power.addEventListener('click', go); powerSmall.addEventListener('click', go)
   addEventListener('keydown', (e) => { if (e.key === 'Enter' && !fired && !(e.target as HTMLElement).closest('button')) go() })
 
   /* ---- EJECT: the camera comes back out of the glass ---- */
