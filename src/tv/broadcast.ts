@@ -61,6 +61,7 @@ export class Broadcast {
     this.tube.querySelectorAll<HTMLVideoElement>('#objects video').forEach((v) => v.play().catch(() => {}))
     this.host.style.opacity = ''
     this.arrive()
+    this.placeText(); $('#spam').querySelectorAll<HTMLElement>('.spam__msg').forEach((s) => this.fitMsg(s))
     if (id) this.lock(id); else if (page) this.page(page)
   }
   /** The floating pieces come in out of the camera's momentum: scaled up, settling into place, decelerating. */
@@ -126,17 +127,47 @@ export class Broadcast {
       this.mount(o)
     }
     for (let i = 0; i < (small ? 3 : 6); i++) this.mount(makeFragment())
+    this.texts = []
     if (t.slug === 'bio') {
       this.mount(this.textWindow('OPERATOR.TXT', `<p>${BIO}</p><p><b>${CONTACT.line}</b></p>`, 0.22))
       this.mount(this.textWindow('CALL-IN', `<p><b>BOOK CVZ</b></p><p><a href="mailto:${CONTACT.email}">${CONTACT.email}</a><br><a href="${CONTACT.instagramUrl}" target="_blank" rel="noopener">${CONTACT.instagram}</a></p>`, 0.62, 0.68))
     }
   }
 
+  /** The screen between the top-left controls and the bottom bar: what a reader can see clear of the buttons. */
+  private safeBand() {
+    const top = Math.max(...['.volctl', '#osd-ch'].map((s) => $(s).getBoundingClientRect().bottom), 0) + 12
+    const nav = $('.nav').getBoundingClientRect()
+    return { top, bottom: (nav.height ? nav.top : innerHeight) - 12 }
+  }
+  /** On a phone the BIO windows sit inside that band, measured, so neither covers the other or the controls:
+      stacked when upright, side by side when the phone is on its side. A body too long for its room scrolls. */
+  private placeText() {
+    const short = innerHeight < 500
+    if ((innerWidth >= 800 && !short) || !this.texts.length) return
+    const band = this.safeBand(), room = band.bottom - band.top, gap = 12
+    const fit = (o: Obj, max: number) => {
+      const body = o.el.querySelector<HTMLElement>('.obj__text')!, bar = o.el.offsetHeight - body.offsetHeight
+      body.style.maxHeight = `${Math.max(60, max - bar)}px`; o.h = o.el.offsetHeight
+    }
+    if (short) {
+      const w = Math.min(460, (innerWidth - gap * 3) / 2)
+      this.texts.forEach((o, i) => { o.w = w; o.el.style.width = w + 'px'; fit(o, room); o.x = gap + i * (w + gap); o.y = band.top })
+      return
+    }
+    const [read, call] = this.texts
+    fit(call, room); fit(read, room - call.h - gap)
+    let y = band.top
+    for (const o of this.texts) { o.x = (innerWidth - o.w) / 2; o.y = y; y += o.h + gap }
+  }
+  private texts: Obj[] = []
+
   private textWindow(title: string, html: string, y = 0.3, x = 0.5): Obj {
     const o = makeFragment(); o.kind = 'window'
     o.el.className = 'obj obj--window obj--text'; o.el.innerHTML = `<div class="obj__bar"><span>${title}</span><i>TAPE ${pad(this.tape?.n ?? 0)}</i></div><div class="obj__text">${html}</div>`
     o.w = Math.min(460, innerWidth - 40); o.h = 260; o.el.style.width = o.w + 'px'; o.el.style.zIndex = '9'
     o.x = innerWidth * x - o.w / 2; o.y = innerHeight * y; o.vx = 0; o.vy = 0; o.held = true
+    this.texts.push(o)
     return o
   }
 
@@ -252,7 +283,27 @@ export class Broadcast {
     const lane = this.tape?.slug === 'bio' // the bio tape is for reading too: toasts keep to the bottom-left lane
     s.textContent = text; s.style.left = `${lane ? 4 + Math.random() * 14 : 8 + Math.random() * 60}%`; s.style.top = `${lane ? 78 + Math.random() * 8 : 20 + Math.random() * 60}%`
     $('#spam').appendChild(s); sfx.blip()
+    this.fitMsg(s)
     setTimeout(() => s.classList.add('out'), 2200 + Math.random() * 1800); setTimeout(() => s.remove(), 4600)
+  }
+
+  /** Keep a message whole on screen and clear of the controls, the other messages and the BIO windows. Where the
+      dice put it somewhere it does not fit, it is re-dealt inside; if nowhere is clear, it is dropped.
+      Before the tube is showing it has no size yet; start() fits those once it is. */
+  private fitMsg(s: HTMLElement) {
+    // Layout sizes, not the on-screen rect: the pop-in animation scales the message while it lands.
+    const w = s.offsetWidth, h = s.offsetHeight, box = $('#spam').getBoundingClientRect(), band = this.safeBand(), m = 12
+    if (!w) return
+    const avoid = [
+      ...[...$('#spam').querySelectorAll<HTMLElement>('.spam__msg')].filter((o) => o !== s).map((o) => o.getBoundingClientRect()),
+      ...this.texts.map((o) => ({ left: box.left + o.x - 8, right: box.left + o.x + o.w + 8, top: box.top + o.y - 8, bottom: box.top + o.y + o.h + 8 })), // where they are placed, not yet drawn (#spam and #objects share a box; #objects may be mid-zoom)
+    ]
+    const fits = (x: number, y: number) => x >= m && x + w <= innerWidth - m && y >= band.top && y + h <= band.bottom
+      && avoid.every((r) => x + w <= r.left || r.right <= x || y + h <= r.top || r.bottom <= y)
+    let x = box.left + s.offsetLeft, y = box.top + s.offsetTop, i = 0
+    for (; i < 16 && !fits(x, y); i++) { x = m + Math.random() * (innerWidth - 2 * m - w); y = band.top + Math.random() * (band.bottom - band.top - h) }
+    if (!fits(x, y)) { s.remove(); return }
+    s.style.left = `${x - box.left}px`; s.style.top = `${y - box.top}px`
   }
 
   /* ---------------- volume ---------------- */

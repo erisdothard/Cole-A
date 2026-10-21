@@ -32,6 +32,7 @@ html[data-fx="off"] .tracking { display: none; }
 .obj--window.hot { border-color: #fff; box-shadow: 4px 4px 0 #000, 0 0 30px rgba(255,255,255,.35); }
 .obj--text { cursor: default; }
 .obj__text { padding: 10px 14px; font-size: 19px; line-height: 1.25; color: #e8e2d0; }
+.obj__text { overflow-y: auto; overscroll-behavior: contain; } /* a phone may give the bio less room than it needs: it scrolls in its window */
 .obj__text p { margin: 0 0 10px; } .obj__text a { color: #7fe1ff; }
 .obj--file { background: #000; border: 3px solid #000; box-shadow: 0 0 0 2px #1f4bff; }
 .tt { display: flex; gap: 10px; padding: 3px 8px; font-size: 18px; background: #000; color: #fff; }
@@ -111,6 +112,7 @@ html[data-fx="off"] .tracking { display: none; }
 @media (hover: none) { .osd--br { display: none; } .chyron__meta span:last-child { font-size: 0; } .chyron__meta span:last-child::after { content: "TAP OUTSIDE · BACK"; font-size: 17px; } .index__head span:last-child { visibility: hidden; } }
 .tube.locked .spam, .tube.indexing .spam { display: none; }
 .spam__msg { max-width: 60vw; }
+@media (max-width: 800px), (max-height: 500px) { .obj--text { z-index: 22 !important; } /* the bio stays readable over whatever drifts past */ .spam__msg { font-size: 18px; white-space: nowrap; max-width: calc(100vw - 24px); overflow: hidden; text-overflow: ellipsis; } .obj__text { font-size: 16px; line-height: 1.2; } }
 #osd-where { display: block; max-width: 46vw; white-space: normal; }
 @media (max-width: 800px) { .volctl { top: calc(3.5vh + 98px); } .osd--vol { top: calc(3.5vh + 150px); } }
 @media (max-height: 500px) and (orientation: landscape) { .tube.locked .nav, .tube.indexing .nav { display: none; } .volctl { top: 2.5vh; } #osd-tl { display: none; } }
