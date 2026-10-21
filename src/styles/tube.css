@@ -33,7 +33,10 @@ html[data-fx="off"] .tracking { display: none; }
 .obj--text { cursor: default; }
 .obj__text { padding: 10px 14px; font-size: 19px; line-height: 1.25; color: #e8e2d0; }
 .obj__text { overflow-y: auto; overscroll-behavior: contain; } /* a phone may give the bio less room than it needs: it scrolls in its window */
-.obj__text p { margin: 0 0 10px; } .obj__text a { color: #7fe1ff; }
+.obj__text p { margin: 0 0 10px; }
+.obj--text.more .obj__text { padding-bottom: 34px; } /* the last line scrolls clear of the cue */
+.obj--text.more::after { content: "MORE ▼"; position: absolute; left: 2px; right: 2px; bottom: 2px; padding: 4px 14px; text-align: right; font-size: 17px; letter-spacing: .14em; color: #ffe83b; text-shadow: 0 0 8px rgba(255,232,59,.6); background: #0a0a0c; border-top: 1px solid rgba(255,232,59,.35); box-shadow: 0 -14px 14px #0a0a0c; pointer-events: none; animation: more-blink 1.4s steps(2) infinite; }
+@keyframes more-blink { 50% { color: #a89a2a; text-shadow: none; } } .obj__text a { color: #7fe1ff; }
 .obj--file { background: #000; border: 3px solid #000; box-shadow: 0 0 0 2px #1f4bff; }
 .tt { display: flex; gap: 10px; padding: 3px 8px; font-size: 18px; background: #000; color: #fff; }
 .tt__p { color: #ffe83b; } .tt__t { color: #3bff6b; } .tt__n { color: #ff5ad2; margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
