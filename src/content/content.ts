@@ -24,17 +24,16 @@ export type Item = {
 export const ITEMS = archive as Item[]
 
 /* The library. Cole's revision (2026-10-05): the set is not the navigation
-   any more — four tapes are. Each tape holds folders, each folder holds
+   any more — the tapes are. Each tape holds folders, each folder holds
    pieces. Folder names are his examples; the sorting of pieces into them is
    a draft for him to correct (videos were sorted by watching their frames). */
 export type Folder = { name: string; ids: string[]; page?: 'about' | 'contact' }
 export type Tape = { n: number; slug: string; name: string; hand: string; tag: string; color: string; folders: Folder[] }
 
 export const TAPES: Tape[] = [
-  { n: 1, slug: 'video', name: 'VIDEO', hand: 'music videos · films · visuals', tag: 'TRANSMISSIONS', color: '#d8141c', folders: [
+  { n: 1, slug: 'video', name: 'VIDEO', hand: 'music videos · visuals', tag: 'TRANSMISSIONS', color: '#d8141c', folders: [
     { name: 'Music Videos', ids: ['synthetic-luv', 'tx-03', 'tx-06'] },
-    { name: 'Short Films', ids: ['tx-04', 'tx-08', 'tx-10'] },
-    { name: 'Visuals', ids: ['cvz-ident', 'tx-03-2', 'tx-12', 'tx-16', 'tx-23', 'tx-21', 'tx-11', 'tx-07', 'tx-02', 'tx-09', 'tx-01', 'tx-05'] },
+    { name: 'Visuals', ids: ['cvz-ident', 'tx-03-2', 'tx-12', 'tx-16', 'tx-23', 'tx-21', 'tx-11', 'tx-07', 'tx-02', 'tx-09', 'tx-01', 'tx-05', 'tx-04', 'tx-08', 'tx-10'] }, // Cole, 2026-10-21: the old Short Films are visuals
   ] },
   { n: 2, slug: 'merch', name: 'MERCH', hand: 'blanks · runs · do not erase', tag: 'SHOP AT HOME', color: '#ff6a00', folders: [
     { name: 'Dorsia', ids: ['b-12', 'b-20', 'b-13', 'b-15', 'b-19', 'b-16'] },
@@ -55,12 +54,14 @@ export const TAPES: Tape[] = [
     { name: 'About', ids: ['p-15', 'p-05', 'p-18'], page: 'about' },
     { name: 'Contact', ids: [], page: 'contact' },
   ] },
-  // The music he makes pictures and videos for, and the night he DJs. Playlists go here when he sends links.
-  { n: 5, slug: 'music', name: 'MUSIC', hand: 'ken sable · dorsia · synthetic luv', tag: 'NOW PLAYING', color: '#ff5ad2', folders: [
-    { name: 'Ken Sable', ids: ['synthetic-luv', 'tx-03', 'p-01', 'p-09', 'p-19', 'tx-06', 'p-07', 'tx-11', 'tx-23'] },
-    { name: 'Dorsia', ids: ['tx-03-2', 'p-02', 'p-17', 'p-14', 'tx-12', 'tx-16', 'p-22', 'b-12', 'b-20'] },
-  ] },
 ]
+
+/* Off the shelf (Cole, 2026-10-21): the MUSIC tape was other people's music; every piece on it is still on
+   VIDEO, DESIGN or MERCH. It goes back in TAPES when he puts his own music out. */
+export const SHELVED_MUSIC: Tape = { n: 5, slug: 'music', name: 'MUSIC', hand: 'ken sable · dorsia · synthetic luv', tag: 'NOW PLAYING', color: '#ff5ad2', folders: [
+  { name: 'Ken Sable', ids: ['synthetic-luv', 'tx-03', 'p-01', 'p-09', 'p-19', 'tx-06', 'p-07', 'tx-11', 'tx-23'] },
+  { name: 'Dorsia', ids: ['tx-03-2', 'p-02', 'p-17', 'p-14', 'tx-12', 'tx-16', 'p-22', 'b-12', 'b-20'] },
+] }
 
 /** Every piece on a tape, folder order. */
 export const tapeItems = (t: Tape): Item[] => t.folders.flatMap((f) => f.ids).map((id) => ITEMS.find((i) => i.id === id)!).filter(Boolean)
@@ -79,7 +80,7 @@ export function locate(id: string): { tape: Tape; folder: Folder } | null {
 
 export const BIO = `After graduating at Indiana University in 2019 with an undergrad in Arts Management, I moved to Nashville to work for a recording studio. Following those few years of visual and audio work, I moved primarily to freelance work. Currently I do visual work for artists and brands, work in a screen printing shop, and am a full time DJ based out of Nashville.`
 
-export const CONTACT = { email: 'cole.anderson4444@gmail.com', instagram: '@__c_v_z__', instagramUrl: 'https://www.instagram.com/__c_v_z__', line: 'Visual Design | Brand Enhancement' }
+export const CONTACT = { email: 'cole.anderson4444@gmail.com', instagram: '@colevz', instagramUrl: 'https://www.instagram.com/colevz', line: 'Visual Design | Brand Enhancement' }
 
 /* Things the set says on its own. Pops up like spam. */
 export const SPAM: { text: string; tone?: 'warn' | 'err' | 'ok' }[] = [

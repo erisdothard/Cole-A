@@ -51,6 +51,13 @@
 .tree__root em { font-style: normal; font-size: 16px; color: #ffe83b; opacity: .8; }
 .tree__root:hover b, .tree__root:focus-visible b { background: #fff; } .tree__root:focus-visible { outline: none; }
 .tree__tape.in .tree__root em::before { content: "▶ IN · "; color: #3bff6b; }
+.tree__head { display: flex; align-items: center; gap: 12px; }
+.tree__head .tree__root { flex: 1 1 auto; width: auto; min-width: 0; }
+.tree__root i { font-style: normal; color: #ffe83b; display: inline-block; transition: transform .15s; }
+.tree__tape.open .tree__root i { transform: rotate(90deg); }
+.tree__tape:not(.open) .tree__folder { display: none; }
+.tree__play { flex: none; margin-left: auto; padding: 4px 10px; border: 1px solid rgba(255,255,255,.35); background: rgba(0,0,0,.4); color: #3bff6b; font: inherit; font-size: 16px; letter-spacing: .12em; cursor: pointer; }
+.tree__play:hover, .tree__play:focus-visible { outline: none; color: #111; background: #3bff6b; border-color: #3bff6b; }
 .tree__row { display: flex; align-items: center; gap: 10px; width: 100%; margin: 6px 0 2px; padding: 0; border: 0; background: none; color: #fff; font: inherit; letter-spacing: .08em; text-align: left; cursor: pointer; }
 .tree__row i, .tree__item i { font-style: normal; color: rgba(255,255,255,.45); white-space: pre; }
 .tree__row b { font-weight: 400; color: #ffe83b; transition: transform .15s; display: inline-block; }
@@ -75,7 +82,7 @@
 .view__cap { display: flex; flex-direction: column; gap: 2px; font-size: 18px; letter-spacing: .08em; }
 .view__cap b { font-family: var(--chy); font-size: 30px; letter-spacing: .04em; color: #fff; text-shadow: 3px 3px 0 #000; }
 .view__cap span { color: #ffe83b; } .view__cap span + span { color: #3bff6b; }
-@media (max-width: 800px) { .index__head { flex-direction: column; gap: 4px; font-size: 20px; } .index__body { grid-template-columns: 1fr; } .index__view { display: none; } .index__tree { font-size: 18px; } .tree__item em { display: none; } .tree__row span { font-size: 18px; } }
+@media (max-width: 800px) { .index__head { flex-direction: column; gap: 4px; font-size: 20px; } .index__body { grid-template-columns: 1fr; } .index__view { display: none; } .index__tree { font-size: 18px; } .tree__item em { display: none; } .tree__row span { font-size: 18px; } .tree__root em { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; } .tree__play { font-size: 14px; padding: 4px 8px; } }
 
 /* a page on the BIO tape, read like a piece */
 .lock__media.text { background: #0a0a0c; border: 2px solid #d9d2bf; box-shadow: 4px 4px 0 #000, 0 0 60px rgba(255,255,255,.15); animation: none; }
@@ -83,4 +90,4 @@
 .page h2 { margin: 0 0 14px; font-family: var(--chy); font-size: clamp(34px, 4vw, 56px); letter-spacing: .04em; color: #fff; text-shadow: 3px 3px 0 #000; }
 .page p { margin: 0 0 12px; } .page a { color: #7fe1ff; }
 
-.tree__row, .tree__root { min-height: 40px; }
+.tree__row, .tree__root, .tree__play { min-height: 40px; }
