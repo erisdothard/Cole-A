@@ -28,7 +28,7 @@ button { font: inherit; }
 .glass-say.blink { animation: glass-blink 1.1s steps(2) infinite; }
 @keyframes glass-blink { 50% { opacity: .2; } }
 
-.set { position: relative; width: max(240px, min(94vw, 980px, calc((100vh - 190px) * var(--w, 932) / var(--h, 960)))); /* never smaller than 240px, whatever the window */ /* as big as the height allows, clear of the readout and the name line */ aspect-ratio: var(--w, 1107) / var(--h, 663); will-change: transform; user-select: none; -webkit-user-select: none; }
+.set { position: relative; width: max(240px, min(94vw, 980px, calc((100vh - 190px) * var(--w, 932) / var(--h, 960)))); /* never smaller than 240px, whatever the window */ /* as big as the height allows, clear of the readout and the name line */ aspect-ratio: var(--w, 1107) / var(--h, 663); container-type: inline-size; /* the logo plate's text scales with the set, not the window */ will-change: transform; user-select: none; -webkit-user-select: none; }
 .set__photo { display: block; width: 100%; height: 100%; pointer-events: none; filter: drop-shadow(0 40px 60px #000); transition: opacity .18s; }
 .set.swap .set__photo, .set.swap > :not(.set__photo) { opacity: 0; }
 .set > * { transition: opacity .18s; }
@@ -115,9 +115,25 @@ button { font: inherit; }
 .sbtn:hover, .sbtn:focus-visible { box-shadow: 0 0 0 2px rgba(255,255,255,.7), 0 0 14px rgba(255,255,255,.35); outline: none; }
 .sbtn:hover span, .sbtn:focus-visible span { color: #fff; }
 .sbtn.down { background: rgba(0,0,0,.35); box-shadow: inset 0 2px 4px #000; }
-.sbtn--power span { color: #c9c4b6; }
-.set:not(.on) .sbtn--power { box-shadow: 0 0 0 2px rgba(255,59,48,.0); animation: power-breathe 2.4s ease-in-out infinite; }
-@keyframes power-breathe { 50% { box-shadow: 0 0 0 2px rgba(255,59,48,.55), 0 0 18px rgba(255,59,48,.35); } }
+/* POWER is the one big button, with CVZ on it (Cole, 2026-10-21: bigger and more noticeable, so nobody hunts for it).
+   Its face is a little proud of the photographed button, centred on it, and breathes red until it is pressed. */
+.sbtn--power { container-type: size; }
+.sbtn--power:hover, .sbtn--power:focus-visible, .sbtn--power.down { box-shadow: none; background: transparent; }
+.sbtn--power b { position: absolute; left: 50%; top: 50%; width: 150%; height: 160%; transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 3px;
+  font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 72cqh; letter-spacing: .14em; text-indent: .14em; line-height: 1; color: #fff3e8; text-shadow: 0 0 8px rgba(255,59,48,.85), 0 -1px 0 #000;
+  background: linear-gradient(180deg, #2b2b2e, #121214); box-shadow: 0 2px 0 #000, 0 4px 8px rgba(0,0,0,.8), inset 0 1px 0 #4a4a4f, 0 0 0 2px rgba(255,59,48,.45), 0 0 12px rgba(255,59,48,.3);
+  transition: transform .08s, box-shadow .2s, background .2s; pointer-events: none; }
+.sbtn--power span { margin-top: calc(30cqh + 3px); color: #c9c4b6; }
+.set:not(.on) .sbtn--power b { animation: power-breathe 2.4s ease-in-out infinite; }
+@keyframes power-breathe { 50% { box-shadow: 0 2px 0 #000, 0 4px 8px rgba(0,0,0,.8), inset 0 1px 0 #4a4a4f, 0 0 0 2px rgba(255,59,48,.95), 0 0 28px rgba(255,59,48,.75); } }
+.sbtn--power:hover b, .sbtn--power:focus-visible b { background: linear-gradient(180deg, #36363a, #18181b); box-shadow: 0 2px 0 #000, 0 0 0 2px rgba(255,255,255,.8), 0 0 20px rgba(255,59,48,.6); }
+.sbtn--power:active b, .set.on .sbtn--power b { transform: translate(-50%, calc(-50% + 2px)); }
+.set.on .sbtn--power { cursor: default; }
+.set.on .sbtn--power b { animation: none; color: #8d8a82; text-shadow: 0 -1px 0 #000; box-shadow: 0 0 0 #000, inset 0 1px 0 #4a4a4f, inset 0 0 0 1px #000; }
+@media (max-width: 800px), (max-height: 500px) and (orientation: landscape) { /* the set is small on a phone: the face grows a little more, so CVZ still reads */
+  .sbtn--power b { width: 180%; height: 200%; font-size: 92cqh; }
+  .sbtn--power span { margin-top: calc(50cqh + 3px); }
+}
 .glass-say.osd { color: #3bff6b; font-size: clamp(12px, 2.1vw, 28px); }
 .roomvol__mute { min-height: 44px; }
 
@@ -136,27 +152,10 @@ button { font: inherit; }
   .roomvol { top: 6px; }
 }
 
-/* his name: CVZ on the set's badge plate — and the plate is the big POWER (Cole, 2026-10-21: bigger, so nobody hunts for it).
-   It sits a little proud of the photographed plate, between the glass and the small buttons, and breathes red until it is pressed. */
-.badge { position: absolute; z-index: 3; left: calc(var(--badge-l) + var(--badge-w) / 2); top: calc(var(--badge-t) + var(--badge-h) / 2); width: calc(var(--badge-w) * 1.6); height: calc(var(--badge-h) * 2.05); container-type: size;
-  transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border: 0; border-radius: 4px; cursor: pointer;
-  -webkit-tap-highlight-color: transparent; touch-action: manipulation; font: inherit;
-  background: linear-gradient(180deg, #262628, #111113); box-shadow: 0 2px 0 #000, 0 5px 10px rgba(0,0,0,.8), inset 0 1px 0 #48484d, 0 0 0 2px rgba(255,59,48,.45), 0 0 14px rgba(255,59,48,.3);
-  transition: transform .08s, box-shadow .2s, background .2s; }
-.badge::before { content: ""; position: absolute; inset: -14px -10px; } /* a finger-sized hit area */
-.badge b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 50cqh; letter-spacing: .24em; text-indent: .24em; line-height: 1; color: #fff3e8; text-shadow: 0 0 10px rgba(255,59,48,.8), 0 -1px 0 #000; }
-.badge span { font-family: var(--osd); margin-top: 7cqh; font-size: 20cqh; letter-spacing: .2em; text-indent: .2em; line-height: 1; color: #ff5a4f; text-shadow: 0 0 6px rgba(255,59,48,.7); }
-.set:not(.on) .badge { animation: cvz-breathe 2.4s ease-in-out infinite; }
-@keyframes cvz-breathe { 50% { box-shadow: 0 2px 0 #000, 0 5px 10px rgba(0,0,0,.8), inset 0 1px 0 #48484d, 0 0 0 2px rgba(255,59,48,.95), 0 0 34px rgba(255,59,48,.75); } }
-.badge:hover, .badge:focus-visible { outline: none; background: linear-gradient(180deg, #303034, #17171a); box-shadow: 0 2px 0 #000, 0 0 0 2px rgba(255,255,255,.75), 0 0 22px rgba(255,59,48,.6); }
-.badge:active, .set.on .badge { transform: translate(-50%, calc(-50% + 2px)); }
-.set.on .badge { cursor: default; animation: none; box-shadow: 0 0 0 #000, inset 0 1px 0 #48484d, inset 0 0 0 1px #000; }
-.set.on .badge span { color: #3bff6b; text-shadow: 0 0 8px rgba(59,255,107,.6); }
-.set.on .badge b { text-shadow: 0 -1px 0 #000; }
-@media (max-width: 800px), (max-height: 500px) and (orientation: landscape) { /* the set is small on a phone: the plate grows more, so CVZ still reads at a glance */
-  .badge { width: calc(var(--badge-w) * 2.15); height: calc(var(--badge-h) * 2.4); }
-  .badge span { font-size: 24cqh; letter-spacing: .14em; text-indent: .14em; }
-}
+/* his name: CVZ on the set's badge plate, and one quiet line at the foot of the room */
+.badge { position: absolute; left: var(--badge-l); top: var(--badge-t); width: var(--badge-w); height: var(--badge-h); display: grid; place-items: center; pointer-events: none;
+  font-family: 'Anton', Impact, sans-serif; font-size: 3.4cqw; letter-spacing: .22em; text-indent: .22em; line-height: 1; color: #b9b4a6;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.12); }
 .room__name { position: fixed; left: 0; right: 0; bottom: max(2.6vh, env(safe-area-inset-bottom)); margin: 0; z-index: 110; text-align: center; pointer-events: none;
   font-family: var(--osd); font-size: clamp(13px, 1.25vw, 19px); letter-spacing: .32em; color: #8d8778; text-shadow: 0 1px 0 #000; }
 .room__name i { font-style: normal; color: #4a4740; }

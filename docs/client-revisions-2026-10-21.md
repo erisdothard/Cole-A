@@ -8,7 +8,7 @@ Ok I think these might be the final updates for the time being: I think the main
 
 ## What was done
 
-- **CVZ is POWER.** The CVZ plate on the set's front is now the big POWER button. It is larger than the plate, has a "⏻ POWER" label, and breathes red until it is pressed. The small photographed POWER button still works. (`index.html`, `src/styles/set.css`, `src/tv/set.ts`)
+- **POWER says CVZ.** The set has one power button, its own, made bigger than the photographed one, breathing red until pressed, with CVZ on it. (A first pass made the CVZ logo plate a second power button; Eris caught it, and the plate is back to being the logo.) (`index.html`, `src/styles/set.css`, `src/tv/set.ts`)
 - **Only a click puts a tape in.** Nothing goes in on its own any more, including on a link to a piece. A link pre-selects its tape on the pile, and once the viewer puts that tape in, the piece opens. A second POWER tap can no longer land on a tape while the pile slides in. (`src/tv/set.ts`, `src/tv/broadcast.ts`)
 - **MUSIC is off the shelf.** Every piece on it was already on VIDEO, DESIGN or MERCH, so nothing left the site. The tape is kept as `SHELVED_MUSIC` in `src/content/content.ts`, and it goes back in `TAPES` when he puts his own music out. The shelf is four tapes.
 - **Short Films → Visuals.** The three pieces moved into VIDEO / Visuals, and VIDEO's label reads "music videos · visuals".

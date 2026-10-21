@@ -1,6 +1,6 @@
 /* Stage 1: the set in the room. A photographed 1990s TV/VCR combo with its
-   front buttons live: VOL − / +, CH ▼ / ▲, EJECT, POWER — and the CVZ plate,
-   which is the big POWER (Cole, 2026-10-21: so nobody has to hunt for it). The tube warms up,
+   front buttons live: VOL − / +, CH ▼ / ▲, EJECT, POWER — the big one, with CVZ
+   on it (Cole, 2026-10-21: so nobody has to hunt for it). The tube warms up,
    the set slides aside and a pile of five VHS tapes is next to it. Put one
    in its slot, the glass says PLAY, and the camera pushes into the screen
    until you are inside it. EJECT, from inside, pulls the camera back out
@@ -19,7 +19,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
 export type Stage = { pullOut(from: Tape): Promise<() => Promise<void>> }
 
 export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void, onPrepare: (t: Tape) => void): Stage {
-  const power = $<HTMLButtonElement>('#power'), powerSmall = $<HTMLButtonElement>('[data-btn="power"]')
+  const power = $<HTMLButtonElement>('#power')
   const led = $('#led'), set = $('#set'), room = $('#room'), glass = $('#glass'), off = $('#tube-off'), say = $('#glass-say')
   const btn = (id: string) => set.querySelector<HTMLButtonElement>(`[data-btn="${id}"]`)!
   let fired = false
@@ -139,7 +139,7 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
   const go = async () => {
     if (fired) return
     fired = true
-    power.disabled = powerSmall.disabled = true; press(power)
+    power.disabled = true; press(power)
     sfx.setLevel(5); showVol() // POWER and the room play at 5
     sfx.powerOn()
     led.classList.add('on')
@@ -163,7 +163,7 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
     glassSay('INSERT TAPE', 'blink')
   }
 
-  power.addEventListener('click', go); powerSmall.addEventListener('click', go)
+  power.addEventListener('click', go)
   addEventListener('keydown', (e) => { if (e.key === 'Enter' && !fired && !(e.target as HTMLElement).closest('button')) go() })
 
   /* ---- EJECT: the camera comes back out of the glass ---- */
