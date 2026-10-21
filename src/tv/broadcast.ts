@@ -149,6 +149,9 @@ export class Broadcast {
     const fit = (o: Obj, max: number) => {
       const body = o.el.querySelector<HTMLElement>('.obj__text')!, bar = o.el.offsetHeight - body.offsetHeight
       body.style.maxHeight = `${Math.max(60, max - bar)}px`; o.h = o.el.offsetHeight
+      // More text than room: MORE ▼ at the foot of the window until it has been scrolled to the end.
+      const more = () => o.el.classList.toggle('more', body.scrollTop + body.clientHeight < body.scrollHeight - 4)
+      more(); body.onscroll = more
     }
     if (short) {
       const w = Math.min(460, (innerWidth - gap * 3) / 2)
