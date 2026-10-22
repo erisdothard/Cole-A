@@ -139,6 +139,8 @@ export function armSet(shelf: Shelf, onInside: (t: Tape) => Promise<void> | void
   const go = async () => {
     if (fired) return
     fired = true
+    const r = power.getBoundingClientRect(), pad = 24 // POWER's spot, before the set moves: the VIDEO tape lands right on it on a phone
+    shelf.guard = { rect: new DOMRect(r.left - pad, r.top - pad, r.width + pad * 2, r.height + pad * 2), until: performance.now() + 3500 }
     power.disabled = true; press(power)
     sfx.setLevel(5); showVol() // POWER and the room play at 5
     sfx.powerOn()

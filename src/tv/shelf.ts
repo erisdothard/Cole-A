@@ -23,6 +23,9 @@ export class Shelf {
   slot: HTMLElement | null = null
   onInsert: (t: Tape) => Promise<void> | void = () => {}
   onHighlight: (i: number) => void = () => {}
+  /** Where POWER was, and until when: on a phone the pile lands right under it, so a second POWER tap is not a tape. */
+  guard: { rect: DOMRect; until: number } | null = null
+  private downOn = -1 // the tape a fresh press started on, since the pile was last opened
 
   constructor() {
     this.row.innerHTML = TAPES.map((t, i) => `<div class="vhs" role="option" tabindex="-1" data-i="${i}" style="--tape-c:${t.color}" aria-label="${esc(t.name)}, ${tapeItems(t).length} pieces">
@@ -33,7 +36,15 @@ export class Shelf {
       </div>`).join('')
     this.tapes().forEach((v, i) => {
       v.addEventListener('pointerenter', () => { if (!this.busy && matchMedia('(hover: hover)').matches) { this.highlight(i); sfx.blip() } })
-      v.addEventListener('click', () => this.insert(i))
+      v.addEventListener('pointerdown', () => { if (!this.busy) this.downOn = i })
+      v.addEventListener('click', (e) => {
+        // Only a tap that started on this tape, after the pile was ready, and not on POWER's old spot while it is still warm.
+        const fresh = this.downOn === i || e.detail === 0 // detail 0: keyboard / assistive "click", no pointer involved
+        this.downOn = -1
+        const g = this.guard, r = g?.rect
+        const onPower = !!r && performance.now() < g!.until && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+        if (fresh && !onPower) this.insert(i)
+      })
     })
     addEventListener('keydown', (e) => {
       if (!this.open || this.busy || (e.target as HTMLElement).closest('a, input')) return
@@ -48,7 +59,7 @@ export class Shelf {
   private tapes() { return [...this.row.querySelectorAll<HTMLElement>('.vhs')] }
 
   show(hi = this.hi) {
-    this.el.hidden = false; this.highlight(hi)
+    this.el.hidden = false; this.highlight(hi); this.downOn = -1
     this.slot?.classList.remove('loaded', 'loading')
     this.tapes().forEach((v) => { v.getAnimations().forEach((a) => a.cancel()); v.style.transform = ''; v.style.visibility = ''; v.classList.remove('in') })
     this.tapes()[hi]?.focus({ preventScroll: true })
